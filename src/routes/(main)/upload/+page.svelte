@@ -5,7 +5,7 @@
 	import Spinner from '$lib/assets/spinner.svg';
 	import { ondrop, onupload } from '$lib/zip';
 	import { redirect } from '@sveltejs/kit';
-	import axios from 'axios';
+	import axios, { type AxiosProgressEvent } from 'axios';
 	import { fade } from 'svelte/transition';
 
 	let upload: UploadButton;
@@ -13,6 +13,8 @@
 	let uploading = true;
 	let loaded = false;
 	let loading = false;
+	let progressBar: HTMLDivElement;
+	let uploadProgress: AxiosProgressEvent;
 
 	let chart: { [key: string]: string };
 	let file: File;
@@ -39,6 +41,11 @@
 	};
 
 	const uploadChart = async () => {
+		progressBar.textContent = '';
+		progressBar.style.backgroundColor = 'ctp(--ctp-mocha-base)';
+		progressBar.style.height = '10px';
+		progressBar.classList.remove('button-mode');
+
 		const chartReq = await fetch('/api/upload', {
 			method: 'POST',
 			body: JSON.stringify(chart)
@@ -50,9 +57,7 @@
 			url: `/api/upload_files?id=${chartInfo.id}`,
 			method: 'PUT',
 			data: JSON.stringify(files),
-			onUploadProgress: (p) => {
-				console.log(p);
-			}
+			onUploadProgress: (p) => (uploadProgress = p)
 		});
 		redirect(StatusCodes.TEMPORARY_REDIRECT, `/charts/${chartInfo.id}`);
 	};
@@ -69,7 +74,22 @@
 	{/if}
 	{#if loaded}
 		<ChartCard {chart} />
-		<div on:click={uploadChart} on:keydown={uploadChart}>Upload</div>
+		<div
+			class="upload-chart button-mode"
+			bind:this={progressBar}
+			on:click={uploadChart}
+			on:keydown={uploadChart}
+		>
+			Upload
+			{#if uploadProgress?.progress}
+				<div class="bar" style="width: {uploadProgress.progress * 100}%" />
+			{/if}
+		</div>
+		{#if uploadProgress?.progress}
+			<div class="upload-progress">
+				{Math.round(uploadProgress.progress * 10 * 100) / 10}%
+			</div>
+		{/if}
 	{/if}
 </div>
 
@@ -96,5 +116,33 @@
 	.dark img {
 		width: 6rem;
 		height: 6rem;
+	}
+
+	.upload-chart {
+		position: relative;
+		background-color: var(--ctp-mocha-mantle);
+		display: grid;
+		place-items: center;
+		width: 300px;
+		height: 30px;
+		border-radius: 5px;
+		overflow: hidden;
+		margin-top: 10px;
+		transition: all 250ms ease;
+	}
+
+	.button-mode.upload-chart:hover {
+		background-color: rgb(85, 214, 80);
+		color: var(--ctp-mocha-base);
+		cursor: pointer;
+	}
+
+	.upload-chart .bar {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		background-color: rgb(85, 214, 80);
+		transition: width 500ms ease;
 	}
 </style>

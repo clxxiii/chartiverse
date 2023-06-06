@@ -12,7 +12,6 @@
 <div class="container">
 	<div class="metadata">
 		<img class="album" src={album_url} alt="" />
-		.
 		<div class="title">{name}</div>
 		<div class="artist">{artist}</div>
 		<div class="charter">{charter}</div>
@@ -32,10 +31,20 @@
 	.metadata {
 		background-color: var(--ctp-mocha-surface1);
 		height: fit-content;
+		display: grid;
+		grid-template-columns: 200px 5px calc(100% - 205px);
+		grid-template-rows: 33% 33% 33%;
 	}
 	img.album {
 		width: 200px;
 		height: 200px;
+		grid-row: 1/4;
+		grid-column: 1/2;
+	}
+	.title,
+	.artist,
+	.charter {
+		grid-column: 3/4;
 	}
 	iframe {
 		margin: 10px;

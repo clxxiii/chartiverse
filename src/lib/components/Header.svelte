@@ -7,7 +7,6 @@
 
 	let uploadEnabled = true;
 	const allowedUploadUsers = JSON.parse(PUBLIC_UPLOAD_ENABLED_USERS);
-	console.log(allowedUploadUsers);
 	if (allowedUploadUsers.length > 0 && user && !allowedUploadUsers.includes(user.id)) {
 		console.log('a');
 		uploadEnabled = false;

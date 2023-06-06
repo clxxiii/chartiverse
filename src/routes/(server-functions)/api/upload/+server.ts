@@ -2,7 +2,9 @@ import { prisma } from '$lib/prisma';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { StatusCodes } from '$lib/StatusCodes';
-import { PUBLIC_CDN_ENDPOINT } from '$env/static/public';
+import { PUBLIC_CDN_ENDPOINT, PUBLIC_UPLOAD_ENABLED_USERS } from '$env/static/public';
+
+const uploadUsers = JSON.parse(PUBLIC_UPLOAD_ENABLED_USERS);
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
 	const sessionId = cookies.get('chartiverse_session');
@@ -24,6 +26,8 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 	});
 
 	if (!user) throw error(StatusCodes.UNAUTHORIZED);
+	if (uploadUsers.length > 0 && user && !uploadUsers.includes(user.id))
+		throw error(StatusCodes.UNAUTHORIZED);
 
 	const chartData: { [key: string]: string } = await request.json();
 

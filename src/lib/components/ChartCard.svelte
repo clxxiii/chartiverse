@@ -79,19 +79,19 @@
 <div class="card" bind:this={card}>
 	{#if link}
 		<a class="chart-page" href="/charts/{id}">this text is invisible</a>
+		<a href="/download/{id}" class="download">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				height="48"
+				viewBox="0 -960 960 960"
+				width="48"
+				stroke="currentColor"
+				><path
+					d="m480-318.022-201.609-201.37 48.979-48.739 118.565 118.804v-367.652h68.13v367.652L632.63-568.131l48.979 48.739L480-318.022ZM148.282-148.521v-222.131h68.131v153.761h526.935v-153.761h68.131v222.131H148.282Z"
+				/></svg
+			>
+		</a>
 	{/if}
-	<a href="/download/{id}" class="download">
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			height="48"
-			viewBox="0 -960 960 960"
-			width="48"
-			stroke="currentColor"
-			><path
-				d="m480-318.022-201.609-201.37 48.979-48.739 118.565 118.804v-367.652h68.13v367.652L632.63-568.131l48.979 48.739L480-318.022ZM148.282-148.521v-222.131h68.131v153.761h526.935v-153.761h68.131v222.131H148.282Z"
-			/></svg
-		>
-	</a>
 	<img class="album" src={album_url} alt="" />
 	<div class="title">{name}</div>
 	<div class="artist">{artist}</div>
