@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Chart {
+  id         String   @id @default(uuid())
+  // Core Info
+  name       String   @default("Unknown Title")
+  artist     String   @default("Unknown Artist")
+  charter    String   @default("Unknown Charter")
+  date_added DateTime @default(now())
+  tag        String   @default("WIP")
+
+  // Additional Metadata
+  album              String @default("Unknown Album")
+  genre              String @default("Unknown Genre")
+  year               String @default("Unknown Year")
+  song_length        Int    @default(0)
+  preview_start_time Int    @default(0)
+  loading_phrase     String @default("")
+  icon               String @default("0")
+  modchart           Int    @default(0)
+  album_track        Int    @default(16000)
+  playlist_track     Int    @default(16000)
+
+  // Difficulties
+  diff_band            Int @default(-1)
+  diff_guitar          Int @default(-1)
+  diff_bass            Int @default(-1)
+  diff_rhythm          Int @default(-1)
+  diff_drums           Int @default(-1)
+  diff_keys            Int @default(-1)
+  diff_guitarghl       Int @default(-1)
+  diff_bassghl         Int @default(-1)
+  diff_rhythm_ghl      Int @default(-1)
+  diff_drums_real      Int @default(-1)
+  diff_guitar_coop_ghl Int @default(-1)
+  diff_guitar_coop     Int @default(-1)
+
+  // TBH IDK, but it's in every song.ini
+  pro_drums       Int @default(0)
+  five_lane_drums Int @default(0)
+  end_events      Int @default(0)
+  count           Int @default(0)
+  frets           Int @default(0)
+
+  // Files
+  song_url  String @default("")
+  chart_url String @default("")
+  album_url String @default("")
+
+  user    User?   @relation(fields: [user_id], references: [id])
+  user_id String?
+}
+
+model Session {
+  id String @id @default(uuid())
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+}
+
+model User {
+  id           String        @id @default(uuid())
+  state        String? // Used for Oauth
+  username     String?
+  avatar_url   String?
+  DiscordOauth DiscordOauth?
+  sessions     Session[]
+  charts       Chart[]
+}
+
+model DiscordOauth {
+  access_token  String
+  token_type    String
+  expires_at    DateTime @default(now())
+  refresh_token String
+  scope         String
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String @id
+}

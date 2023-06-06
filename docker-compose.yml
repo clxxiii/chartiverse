@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  app:
+    restart: 'always'
+    image: 'clxxiii/chartiverse'
+    build: '.'
+    env_file: '.env'
+    volumes:
+      - './db:/app/db'
+    ports:
+      - '3000:3000'

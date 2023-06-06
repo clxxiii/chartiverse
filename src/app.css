@@ -1,0 +1,16 @@
+@font-face {
+  font-family: Quicksand;
+  src: url("/Quicksand-VariableFont_wght.ttf");
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url("/Poppins-Regular.ttf");
+}
+
+body {
+  font-family: Poppins;
+  margin: 0;
+  background-color: var(--ctp-mocha-base);
+  color: var(--ctp-mocha-text);
+}
