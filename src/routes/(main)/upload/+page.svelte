@@ -57,6 +57,7 @@
 			url: `/api/upload_files?id=${chartInfo.id}`,
 			method: 'PUT',
 			data: JSON.stringify(files),
+			maxBodyLength: 104857600,
 			onUploadProgress: (p) => (uploadProgress = p)
 		});
 		redirect(StatusCodes.TEMPORARY_REDIRECT, `/charts/${chartInfo.id}`);
