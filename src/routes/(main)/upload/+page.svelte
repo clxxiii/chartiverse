@@ -7,6 +7,7 @@
 	import { redirect } from '@sveltejs/kit';
 	import axios, { type AxiosProgressEvent } from 'axios';
 	import { fade } from 'svelte/transition';
+	import { browser } from '$app/environment';
 
 	let upload: UploadButton;
 
@@ -53,19 +54,16 @@
 		const chartInfo = await chartReq.json();
 		const files = await onupload(file);
 
-		uploadProgress = 1;
-		await fetch(`/api/upload_files?id=${chartInfo.id}`, {
+		await axios({
+			url: `/api/upload_files?id=${chartInfo.id}`,
 			method: 'PUT',
-			body: JSON.stringify(files)
+			data: JSON.stringify(files),
+			maxBodyLength: 104857600,
+			onUploadProgress: (p) => (p.progress ? (uploadProgress = p.progress * 100) : '')
 		});
-		uploadProgress = 2;
-		// await axios({
-		// 	url: `/api/upload_files?id=${chartInfo.id}`,
-		// 	method: 'PUT',
-		// 	data: JSON.stringify(files),
-		// 	maxBodyLength: 104857600,
-		// 	onUploadProgress: (p) => (p.progress ? (uploadProgress = p.progress * 100) : '')
-		// });
+
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		if (browser) window.location.href = `/charts/${chart.id}`;
 	};
 </script>
 
