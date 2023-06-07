@@ -14,7 +14,7 @@
 	let loaded = false;
 	let loading = false;
 	let progressBar: HTMLDivElement;
-	let uploadProgress: AxiosProgressEvent;
+	let uploadProgress: number;
 
 	let chart: { [key: string]: string };
 	let file: File;
@@ -53,14 +53,19 @@
 		const chartInfo = await chartReq.json();
 		const files = await onupload(file);
 
-		await axios({
-			url: `/api/upload_files?id=${chartInfo.id}`,
+		uploadProgress = 1;
+		await fetch(`/api/upload_files?id=${chartInfo.id}`, {
 			method: 'PUT',
-			data: JSON.stringify(files),
-			maxBodyLength: 104857600,
-			onUploadProgress: (p) => (uploadProgress = p)
+			body: JSON.stringify(files)
 		});
-		redirect(StatusCodes.TEMPORARY_REDIRECT, `/charts/${chartInfo.id}`);
+		uploadProgress = 2;
+		// await axios({
+		// 	url: `/api/upload_files?id=${chartInfo.id}`,
+		// 	method: 'PUT',
+		// 	data: JSON.stringify(files),
+		// 	maxBodyLength: 104857600,
+		// 	onUploadProgress: (p) => (p.progress ? (uploadProgress = p.progress * 100) : '')
+		// });
 	};
 </script>
 
@@ -82,13 +87,13 @@
 			on:keydown={uploadChart}
 		>
 			Upload
-			{#if uploadProgress?.progress}
-				<div class="bar" style="width: {uploadProgress.progress * 100}%" />
+			{#if uploadProgress}
+				<div class="bar" style="width: {uploadProgress}%" />
 			{/if}
 		</div>
-		{#if uploadProgress?.progress}
+		{#if uploadProgress}
 			<div class="upload-progress">
-				{Math.round(uploadProgress.progress * 10 * 100) / 10}%
+				{Math.round(uploadProgress * 10) / 10}%
 			</div>
 		{/if}
 	{/if}
