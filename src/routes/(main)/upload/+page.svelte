@@ -63,7 +63,7 @@
 		});
 
 		await new Promise((resolve) => setTimeout(resolve, 1000));
-		if (browser) window.location.href = `/charts/${chart.id}`;
+		if (browser) window.location.href = `/charts/${chartInfo.id}`;
 	};
 </script>
 
