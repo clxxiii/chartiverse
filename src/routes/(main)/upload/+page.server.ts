@@ -1,4 +1,5 @@
 import { PUBLIC_UPLOAD_ENABLED_USERS } from '$env/static/public';
+import { StatusCodes } from '$lib/StatusCodes';
 import { prisma } from '$lib/prisma';
 import { error, type ServerLoad } from '@sveltejs/kit';
 
@@ -8,7 +9,7 @@ const uploadUsers = JSON.parse(PUBLIC_UPLOAD_ENABLED_USERS);
 
 export const load: ServerLoad = async ({ cookies }) => {
 	const sessionId = cookies.get('chartiverse_session');
-
+	if (!sessionId) throw error(StatusCodes.UNAUTHORIZED);
 	const user = await prisma.user.findFirst({
 		where: {
 			sessions: {
@@ -18,7 +19,8 @@ export const load: ServerLoad = async ({ cookies }) => {
 			}
 		}
 	});
+	if (!user) throw error(StatusCodes.UNAUTHORIZED);
 	if (uploadUsers.length > 0 && user && !uploadUsers.includes(user.id)) {
-		throw error(400, 'Unauthorized to upload');
+		throw error(StatusCodes.UNAUTHORIZED, 'Unauthorized to upload');
 	}
 };
