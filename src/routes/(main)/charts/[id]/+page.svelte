@@ -12,9 +12,16 @@
 <div class="container">
 	<div class="metadata">
 		<img class="album" src={album_url} alt="" />
-		<div class="title">{name}</div>
-		<div class="artist">{artist}</div>
-		<div class="charter">{charter}</div>
+		<div class="info">
+			<div class="title">{name}</div>
+			<div class="artist">{artist}</div>
+			<div class="charter">
+				Charted by
+				<a href="/charters/{user_id}">
+					{charter}
+				</a>
+			</div>
+		</div>
 	</div>
 	<iframe frameborder="0" src="/preview/{id}" title="Chart Preview" />
 </div>
@@ -30,16 +37,27 @@
 	}
 	.metadata {
 		background-color: var(--ctp-mocha-surface1);
-		height: fit-content;
-		display: grid;
-		grid-template-columns: 200px 5px calc(100% - 205px);
-		grid-template-rows: 33% 33% 33%;
+		font-family: 'Quicksand';
+		height: 200px;
+		display: flex;
+		gap: 5px;
 	}
 	img.album {
 		width: 200px;
 		height: 200px;
 		grid-row: 1/4;
 		grid-column: 1/2;
+	}
+	.title {
+		font-size: 2em;
+		font-weight: 800;
+	}
+	.artist {
+		font-size: 1.5em;
+		font-weight: 600;
+	}
+	.charter {
+		margin-top: 1.5em;
 	}
 	.title,
 	.artist,

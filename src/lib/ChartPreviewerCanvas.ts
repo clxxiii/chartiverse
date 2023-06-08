@@ -77,7 +77,7 @@ class ChartPreviewer {
 		this.ctx.beginPath();
 		this.ctx.fillStyle = '#222';
 		this.ctx.fillRect(0, 0, this.width, this.height);
-		this.ctx.lineWidth = 10;
+		this.ctx.lineWidth = this.width * notePaddingPercent * 1;
 		this.ctx.moveTo(0, this.height * 0.9);
 		this.ctx.lineTo(this.width, this.height * 0.9);
 		this.ctx.strokeStyle = '#AAA';

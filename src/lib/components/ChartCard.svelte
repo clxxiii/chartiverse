@@ -115,7 +115,7 @@
 		padding: 10px;
 		height: 80px;
 		width: 300px;
-		background-color: var(--ctp-mocha-surface1);
+		background-color: var(--ctp-mocha-surface2);
 		font-family: Quicksand;
 		font-size: 12px;
 		font-weight: 500;

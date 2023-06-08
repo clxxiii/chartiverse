@@ -92,6 +92,8 @@
 		{#if uploadProgress}
 			<div class="upload-progress">
 				{Math.round(uploadProgress * 10) / 10}%
+				<br />
+				{uploadProgress == 100 ? '(Building Chart Preview)' : ''}
 			</div>
 		{/if}
 	{/if}
