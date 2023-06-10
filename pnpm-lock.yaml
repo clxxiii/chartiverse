@@ -29,6 +29,9 @@ dependencies:
   prisma:
     specifier: ^4.15.0
     version: 4.15.0
+  twitch-api-typescript:
+    specifier: ^0.5.5
+    version: 0.5.5
   typescript-map:
     specifier: ^0.1.0
     version: 0.1.0
@@ -538,6 +541,10 @@ packages:
   /@types/json-schema@7.0.12:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
     dev: true
+
+  /@types/node@18.16.17:
+    resolution: {integrity: sha512-QAkjjRA1N7gPJeAP4WLXZtYv6+eMXFNviqktCDt4GLcmCugMr5BcRHfkOjCQzvCsnMp+L79a54zBkbw356xv9Q==}
+    dev: false
 
   /@types/node@20.2.5:
     resolution: {integrity: sha512-JJulVEQXmiY9Px5axXHeYGLSjhkZEnD+MDPDGbCbIAbMslkKwmygtZFy1X6s/075Yo94sf8GuSlFfPzysQrWZQ==}
@@ -2294,6 +2301,16 @@ packages:
       typescript: 5.0.4
     dev: true
 
+  /twitch-api-typescript@0.5.5:
+    resolution: {integrity: sha512-oqilXD3MLeMKMz94z2HHhKKQPZb2E3xkTnFMT53/SHumw/3HexgShT/vP1vo0zdVNsT5VBubotNOIBlV85SIWg==}
+    dependencies:
+      '@types/node': 18.16.17
+      axios: 1.4.0
+      zod: 3.21.4
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -2517,3 +2534,7 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
     dev: true
+
+  /zod@3.21.4:
+    resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: false

@@ -1,79 +1,16 @@
 <script lang="ts">
 	import type { Chart } from '@prisma/client';
-	import Download from '$lib/assets/download.svg';
 
 	export let chart: Chart | { [key: string]: string };
 
-	// {
-	// 	id: '',
-	// 	name: 'Unknown Title',
-	// 	artist: 'Unknown Artist',
-	// 	charter: 'Unknown Charter',
-	// 	album: 'Unknown Album',
-	// 	genre: 'Unknown Genre',
-	// 	year: '1920',
-	// 	song_length: 0,
-	// 	preview_start_time: 0,
-	// 	loading_phrase: '0',
-	// 	icon: '0',
-	// 	modchart: 0,
-	// 	album_track: 16000,
-	// 	playlist_track: 16000,
-	// 	diff_band: -1,
-	// 	diff_guitar: -1,
-	// 	diff_bass: -1,
-	// 	diff_rhythm: -1,
-	// 	diff_drums: -1,
-	// 	diff_keys: -1,
-	// 	diff_guitarghl: -1,
-	// 	diff_bassghl: -1,
-	// 	diff_rhythm_ghl: -1,
-	// 	diff_drums_real: -1,
-	// 	diff_guitar_coop_ghl: -1,
-	// 	diff_guitar_coop: -1,
-	// 	pro_drums: 0,
-	// 	five_lane_drums: 0,
-	// 	end_events: 0,
-	// 	count: 0,
-	// 	frets: 0
-	// };
 	let card: HTMLDivElement;
 	export let link = false;
 
-	const {
-		id,
-		name,
-		artist,
-		charter,
-		album,
-		genre,
-		year,
-		song_length,
-		preview_start_time,
-		loading_phrase,
-		icon,
-		modchart,
-		album_track,
-		playlist_track,
-		diff_band,
-		diff_guitar,
-		diff_bass,
-		diff_rhythm,
-		diff_drums,
-		diff_keys,
-		diff_guitarghl,
-		diff_bassghl,
-		diff_rhythm_ghl,
-		diff_drums_real,
-		diff_guitar_coop_ghl,
-		diff_guitar_coop,
-		pro_drums,
-		five_lane_drums,
-		end_events,
-		count,
-		frets,
-		album_url
-	} = chart;
+	const { id, name, artist, charter, album_url } = chart;
+
+	let hover = false;
+	let playing = false;
+	const preview = () => {};
 </script>
 
 <div class="card" bind:this={card}>
@@ -82,20 +19,59 @@
 		<a href="/download/{id}" class="download">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				height="48"
-				viewBox="0 -960 960 960"
-				width="48"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="1.5"
 				stroke="currentColor"
-				><path
-					d="m480-318.022-201.609-201.37 48.979-48.739 118.565 118.804v-367.652h68.13v367.652L632.63-568.131l48.979 48.739L480-318.022ZM148.282-148.521v-222.131h68.131v153.761h526.935v-153.761h68.131v222.131H148.282Z"
-				/></svg
+				class="w-6 h-6"
 			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+				/>
+			</svg>
 		</a>
 	{/if}
-	<img class="album" src={album_url} alt="" />
+	<div class="album">
+		{#if hover}
+			<div class="preview">
+				{#if playing}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="currentColor"
+						class="w-6 h-6"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M6.75 5.25a.75.75 0 01.75-.75H9a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V5.25zm7.5 0A.75.75 0 0115 4.5h1.5a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75V5.25z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+				{:else}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="currentColor"
+						class="w-6 h-6"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+				{/if}
+			</div>
+		{/if}
+		<img class="album" src={album_url} alt="" />
+	</div>
 	<div class="title">{name}</div>
 	<div class="artist">{artist}</div>
-	<div class="charter">Charted by {charter}</div>
+	<div class="charter">
+		Charted by {charter}
+	</div>
 </div>
 
 <style>
@@ -122,13 +98,15 @@
 		transition: scale 200ms ease;
 		z-index: 0;
 	}
-	.card .download svg {
+	.download svg {
 		width: 15px;
 		height: 15px;
-		color: white;
+		transition: all 200ms ease;
+		color: var(--ctp-mocha-text);
 	}
 
 	.card .album {
+		position: relative;
 		width: calc(100px - 2 * 10px);
 		height: calc(100px - 2 * 10px);
 	}
@@ -137,16 +115,28 @@
 		display: grid;
 		place-items: center;
 		appearance: none;
+		background-color: var(--ctp-mocha-surface1);
+		transition: all 200ms ease;
 		border: none;
+		padding: 5px;
+		border-radius: 5px;
 		bottom: 5px;
 		right: 5px;
 		width: 30px;
 		height: 15px;
 		z-index: 2;
 	}
+	.download:hover {
+		background-color: var(--ctp-mocha-sky);
+	}
+	.download:hover svg {
+		color: var(--ctp-mocha-base);
+	}
 	.title,
 	.artist,
 	.charter {
+		overflow: hidden;
+		text-overflow: ellipsis;
 		grid-column: 3 / 4;
 	}
 	.title {
@@ -158,5 +148,15 @@
 	.charter {
 		color: var(--ctp-mocha-lavender);
 		grid-row: 5/6;
+	}
+	.preview {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0.5);
+		backdrop-filter: blur(5px);
+		z-index: 10;
 	}
 </style>

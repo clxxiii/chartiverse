@@ -27,9 +27,9 @@ export const GET: RequestHandler = async ({ params }) => {
 		songIni += `${key} = ${chartMetadata[key]}\n`;
 	}
 
-	const album = await download(`${id}/album.jpg`);
-	const chart = await download(`${id}/notes.chart`);
-	const song = await download(`${id}/song.ogg`);
+	const album = await download(`/charts/${id}/album.jpg`);
+	const chart = await download(`/charts/${id}/notes.chart`);
+	const song = await download(`/charts/${id}/song.ogg`);
 
 	const zip = new JSZip();
 	zip.file(`${chartMetadata.artist} - ${chartMetadata.name}/song.ini`, songIni);

@@ -1,17 +1,19 @@
-import { HOSTNAME, TWITCH_CLIENT_SECRET } from '$env/static/private';
-import { PUBLIC_TWITCH_CLIENT_ID } from '$env/static/public';
+import { URL_HOSTNAME, TWITCH_CLIENT_SECRET } from '$env/static/private';
+import { PUBLIC_CDN_ENDPOINT, PUBLIC_TWITCH_CLIENT_ID } from '$env/static/public';
+import { randomBytes } from 'crypto';
+import { TwitchAPI } from 'twitch-api-typescript';
 import { error } from '@sveltejs/kit';
 import { prisma } from './prisma';
 import { StatusCodes } from './StatusCodes';
+import { upload } from './storage';
 
 const AUTH_URL = 'https://id.twitch.tv/oauth2/authorize';
 const TOKEN_URL = 'https://id.twitch.tv/oauth2/token';
-const API_URL = 'https://api.twitch.tv/helix';
 
 export const generateUrl = (scope: string, state: string) => {
 	const params = new URLSearchParams();
 	params.set('client_id', PUBLIC_TWITCH_CLIENT_ID);
-	params.set('redirect_uri', `${HOSTNAME}/auth/callback/twitch`);
+	params.set('redirect_uri', `${URL_HOSTNAME}/auth/callback/twitch`);
 	params.set('scope', scope);
 	params.set('state', state);
 	params.set('force_verify', 'true');
@@ -25,7 +27,7 @@ export const exchangeCode = async (code: string, scope: string, state: string) =
 	params.set('client_secret', TWITCH_CLIENT_SECRET);
 	params.set('code', code);
 	params.set('grant_type', 'authorization_code');
-	params.set('redirect_uri', `${HOSTNAME}/auth/callback/twitch`);
+	params.set('redirect_uri', `${URL_HOSTNAME}/auth/callback/twitch`);
 
 	const tokenRequestUrl = `${TOKEN_URL}?${params.toString()}`;
 	const tokenRequest = await fetch(tokenRequestUrl, {
@@ -33,21 +35,20 @@ export const exchangeCode = async (code: string, scope: string, state: string) =
 	});
 	const token = await tokenRequest.json();
 
-	const userDataRequest = await fetch(`${API_URL}/users`, {
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token.access_token}`,
-			'Client-Id': PUBLIC_TWITCH_CLIENT_ID
+	const twitchClient = new TwitchAPI({
+		clientId: PUBLIC_TWITCH_CLIENT_ID,
+		clientSecret: TWITCH_CLIENT_SECRET,
+		tokens: {
+			userToken: token.access_token
+		},
+		options: {
+			refreshAppToken: false,
+			refreshUserToken: false
 		}
 	});
-	const userData = await userDataRequest.json();
-	if (userData.error) {
-		throw error(
-			StatusCodes.INTERNAL_SERVER_ERROR,
-			`${userData.status}: ${userData.error}, ${userData.message}`
-		);
-	}
-	const data = userData.data[0];
+	await twitchClient.init();
+
+	const userData = (await twitchClient.getUsers())[0];
 
 	const session = await prisma.session.findUnique({
 		where: {
@@ -60,13 +61,13 @@ export const exchangeCode = async (code: string, scope: string, state: string) =
 			'If you got here something incredibly wrong has happened'
 		);
 
-	await prisma.user.upsert({
+	const user = await prisma.user.upsert({
 		where: {
-			twitch_id: data.id
+			twitch_id: userData.id
 		},
 		create: {
-			username: userData.display_name,
-			avatar_url: userData.profile_image_url,
+			username: userData.displayName,
+			twitch_id: userData.id,
 			twitch_oauth: {
 				create: {
 					access_token: token.access_token,
@@ -115,6 +116,22 @@ export const exchangeCode = async (code: string, scope: string, state: string) =
 					}
 				}
 			}
+		}
+	});
+
+	// Upload avatar to cdn
+	if (!userData.profileImageURL || user.avatar_url) return;
+
+	const avatarId = randomBytes(8).toString('hex');
+	const avatarRequest = await fetch(userData.profileImageURL);
+	const avatar = await avatarRequest.arrayBuffer();
+	await upload(avatar, `/a/${user.id}/${avatarId}.png`);
+	await prisma.user.update({
+		where: {
+			id: user.id
+		},
+		data: {
+			avatar_url: `${PUBLIC_CDN_ENDPOINT}/a/${user.id}/${avatarId}.png`
 		}
 	});
 };

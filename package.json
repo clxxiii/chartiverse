@@ -39,6 +39,7 @@
 		"filedrop-svelte": "^0.1.2",
 		"jszip": "^3.10.1",
 		"prisma": "^4.15.0",
+		"twitch-api-typescript": "^0.5.5",
 		"typescript-map": "^0.1.0"
 	}
 }

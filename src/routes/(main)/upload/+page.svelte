@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { StatusCodes } from '$lib/StatusCodes';
 	import ChartCard from '$lib/components/ChartCard.svelte';
 	import UploadButton from '$lib/components/UploadButton.svelte';
 	import Spinner from '$lib/assets/spinner.svg';
 	import { ondrop, onupload } from '$lib/zip';
-	import { redirect } from '@sveltejs/kit';
-	import axios, { type AxiosProgressEvent } from 'axios';
+	import axios from 'axios';
 	import { fade } from 'svelte/transition';
 	import { browser } from '$app/environment';
 
@@ -136,9 +134,12 @@
 		margin-top: 10px;
 		transition: all 250ms ease;
 	}
+	.upload-progress {
+		text-align: center;
+	}
 
 	.button-mode.upload-chart:hover {
-		background-color: rgb(85, 214, 80);
+		background-color: var(--ctp-mocha-sky);
 		color: var(--ctp-mocha-base);
 		cursor: pointer;
 	}

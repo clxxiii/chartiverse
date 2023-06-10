@@ -100,7 +100,14 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 	}
 
 	let chart = await prisma.chart.create({
-		data: typedChartData
+		data: {
+			...typedChartData,
+			user: {
+				connect: {
+					id: user.id
+				}
+			}
+		}
 	});
 
 	chart = await prisma.chart.update({

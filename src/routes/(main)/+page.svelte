@@ -17,6 +17,10 @@
 	// };
 </script>
 
+<svelte:head>
+	<title>Chartiverse</title>
+</svelte:head>
+
 <div class="charts">
 	<!-- <Searchbar on:searchstart={searchstart} on:searchend={searchend} /> -->
 	<div bind:this={chartlist} class="chart-list">
