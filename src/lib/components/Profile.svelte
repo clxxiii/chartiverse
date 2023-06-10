@@ -10,7 +10,7 @@
 		<div class="label">{user.username}</div>
 	</div>
 {:else}
-	<a href="/auth/login/discord">Login</a>
+	<a href="/auth/login/twitch">Login</a>
 {/if}
 
 <style>

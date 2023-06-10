@@ -34,9 +34,9 @@ export const PUT: RequestHandler = async ({ request, url, cookies }) => {
 
 	if (!id) throw error(StatusCodes.BAD_REQUEST);
 
-	await upload(Buffer.from(data.album, 'base64'), `${id}/album.jpg`);
-	await upload(Buffer.from(data.song, 'base64'), `${id}/song.ogg`);
-	await upload(Buffer.from(data.chart, 'base64'), `${id}/notes.chart`);
+	await upload(Buffer.from(data.album, 'base64'), `/charts/${id}/album.jpg`);
+	await upload(Buffer.from(data.song, 'base64'), `/charts/${id}/song.ogg`);
+	await upload(Buffer.from(data.chart, 'base64'), `/charts/${id}/notes.chart`);
 
 	const chart = await prisma.chart.findUnique({ where: { id } });
 	return json({ chart });

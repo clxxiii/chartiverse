@@ -34,7 +34,6 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 	const {
 		name,
 		artist,
-		charter,
 		album,
 		genre,
 		year,
@@ -66,7 +65,6 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 	const typedChartData = {
 		name,
 		artist,
-		charter,
 		album,
 		genre,
 		year,
@@ -110,9 +108,9 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 			id: chart.id
 		},
 		data: {
-			album_url: `${PUBLIC_CDN_ENDPOINT}/${chart.id}/album.jpg`,
-			song_url: `${PUBLIC_CDN_ENDPOINT}/${chart.id}/song.ogg`,
-			chart_url: `${PUBLIC_CDN_ENDPOINT}/${chart.id}/notes.chart`
+			album_url: `${PUBLIC_CDN_ENDPOINT}/charts/${chart.id}/album.jpg`,
+			song_url: `${PUBLIC_CDN_ENDPOINT}/charts/${chart.id}/song.ogg`,
+			chart_url: `${PUBLIC_CDN_ENDPOINT}/charts/${chart.id}/notes.chart`
 		}
 	});
 
