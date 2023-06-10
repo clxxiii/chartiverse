@@ -37,22 +37,24 @@ CREATE TABLE "Chart" (
     "chart_url" TEXT NOT NULL DEFAULT '',
     "album_url" TEXT NOT NULL DEFAULT '',
     "user_id" TEXT,
-    CONSTRAINT "Chart_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT "Chart_user_id_charter_fkey" FOREIGN KEY ("user_id", "charter") REFERENCES "User" ("id", "username") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Session" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "user_id" TEXT NOT NULL,
-    CONSTRAINT "Session_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "user_id" TEXT,
+    "state" TEXT,
+    CONSTRAINT "Session_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "state" TEXT,
     "username" TEXT,
-    "avatar_url" TEXT
+    "avatar_url" TEXT,
+    "discord_id" TEXT,
+    "twitch_id" TEXT
 );
 
 -- CreateTable
@@ -65,3 +67,26 @@ CREATE TABLE "DiscordOauth" (
     "user_id" TEXT NOT NULL PRIMARY KEY,
     CONSTRAINT "DiscordOauth_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+-- CreateTable
+CREATE TABLE "TwitchOauth" (
+    "access_token" TEXT NOT NULL,
+    "token_type" TEXT NOT NULL,
+    "expires_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "refresh_token" TEXT NOT NULL,
+    "scope" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL PRIMARY KEY,
+    CONSTRAINT "TwitchOauth_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Session_state_key" ON "Session"("state");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_discord_id_key" ON "User"("discord_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_twitch_id_key" ON "User"("twitch_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_id_username_key" ON "User"("id", "username");
