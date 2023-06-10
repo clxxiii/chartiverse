@@ -57,28 +57,47 @@ model Chart {
   chart_url String @default("")
   album_url String @default("")
 
-  user    User?   @relation(fields: [user_id], references: [id])
+  user    User?   @relation(fields: [user_id, charter], references: [id, username])
   user_id String?
 }
 
 model Session {
   id String @id @default(uuid())
 
-  user    User   @relation(fields: [user_id], references: [id])
+  user    User    @relation(fields: [user_id], references: [id])
   user_id String
+  state   String? @unique // This property is used for Oauth. Once logged in, it is not used again.
 }
 
 model User {
-  id           String        @id @default(uuid())
-  state        String? // Used for Oauth
-  username     String?
-  avatar_url   String?
-  DiscordOauth DiscordOauth?
-  sessions     Session[]
-  charts       Chart[]
+  id         String  @id @default(uuid())
+  username   String?
+  avatar_url String?
+  charts     Chart[]
+
+  discord_oauth DiscordOauth?
+  discord_id    String?       @unique
+
+  twitch_oauth TwitchOauth?
+  twitch_id    String?      @unique
+
+  sessions Session[]
+
+  @@unique([id, username])
 }
 
 model DiscordOauth {
+  access_token  String
+  token_type    String
+  expires_at    DateTime @default(now())
+  refresh_token String
+  scope         String
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String @id
+}
+
+model TwitchOauth {
   access_token  String
   token_type    String
   expires_at    DateTime @default(now())

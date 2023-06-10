@@ -1,13 +1,13 @@
 import DiscordOauth2 from 'discord-oauth2';
-import { PUBLIC_DISCORD_CLIENT_ID, PUBLIC_DISCORD_REDIRECT_URI } from '$env/static/public';
-import { DISCORD_CLIENT_SECRET } from '$env/static/private';
+import { PUBLIC_DISCORD_CLIENT_ID } from '$env/static/public';
+import { DISCORD_CLIENT_SECRET, HOSTNAME } from '$env/static/private';
 import { prisma } from './prisma';
 import { error } from '@sveltejs/kit';
 
 const oauth = new DiscordOauth2({
 	clientId: PUBLIC_DISCORD_CLIENT_ID,
 	clientSecret: DISCORD_CLIENT_SECRET,
-	redirectUri: PUBLIC_DISCORD_REDIRECT_URI
+	redirectUri: `${HOSTNAME}/auth/callback/discord`
 });
 
 export const generateUrl = (scope: string, state: string) =>
@@ -45,13 +45,11 @@ export const exchangeCode = async (code: string, scope: string, state: string) =
 		}
 	});
 	const userData = await oauth.getUser(token.access_token);
-	await prisma.user.update({
-		where: {
-			id: user.id
-		},
+	await prisma.user.upsert({
+		where: {},
 		data: {
 			avatar_url: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`,
-			username: userData.username,
+			discord_id: userData.id,
 			state: ''
 		}
 	});
