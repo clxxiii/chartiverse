@@ -5,16 +5,33 @@
 
 	export let data: { charts: ChartType[] };
 
-	let charts = data.charts;
+	type AudioPreview = {
+		reset: () => void;
+		play: () => void;
+		pause: () => void;
+		init: () => void;
+		song_url: string;
+		preview_start_time: number;
+		audio: HTMLAudioElement;
+		playing: boolean;
+	};
 
+	let charts = data.charts;
+	let currentSongPreview: AudioPreview;
 	let chartlist: HTMLDivElement;
 
-	// const searchstart = () => {
-	// 	chartlist.style.opacity = '0.8';
-	// };
-	// const searchend = () => {
-	// 	chartlist.style.opacity = '1';
-	// };
+	let previewFunction = (preview: AudioPreview) => {
+		if (currentSongPreview?.song_url == preview.song_url) {
+			preview.playing ? preview.pause() : preview.play();
+			preview.playing = !preview.playing;
+			return;
+		}
+
+		if (currentSongPreview) currentSongPreview.reset();
+		preview.init();
+		preview.play();
+		currentSongPreview = preview;
+	};
 </script>
 
 <svelte:head>
@@ -25,7 +42,7 @@
 	<!-- <Searchbar on:searchstart={searchstart} on:searchend={searchend} /> -->
 	<div bind:this={chartlist} class="chart-list">
 		{#each charts as chart}
-			<ChartCard link {chart} />
+			<ChartCard link {chart} {previewFunction} />
 		{/each}
 	</div>
 </div>

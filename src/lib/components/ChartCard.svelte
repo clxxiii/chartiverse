@@ -1,21 +1,70 @@
 <script lang="ts">
 	import type { Chart } from '@prisma/client';
+	import { fade } from 'svelte/transition';
 
-	export let chart: Chart | { [key: string]: string };
+	export let chart: Chart;
+	type AudioPreview = {
+		reset: () => void;
+		play: () => void;
+		pause: () => void;
+		init: () => void;
+		song_url: string;
+		preview_start_time: number;
+		audio: HTMLAudioElement;
+		playing: boolean;
+	};
 
 	let card: HTMLDivElement;
 	export let link = false;
+	export let previewFunction: (arg0: AudioPreview) => void;
 
-	const { id, name, artist, charter, album_url } = chart;
+	const { id, name, artist, charter, album_url, song_url, preview_start_time } = chart;
 
 	let hover = false;
 	let playing = false;
-	const preview = () => {};
+	let audio: HTMLAudioElement;
+
+	const mouseenter = () => {
+		hover = true;
+	};
+	const mouseleave = () => {
+		if (!playing) hover = false;
+	};
+	const resetPreview = () => {
+		pause();
+		hover = false;
+		audio.currentTime = preview_start_time / 1000;
+	};
+	const init = () => {
+		if (!audio) audio = new Audio(song_url);
+		audio.volume = 0.3;
+		audio.currentTime = preview_start_time / 1000;
+	};
+	const play = () => {
+		audio.play();
+		playing = true;
+	};
+	const pause = () => {
+		audio.pause();
+		playing = false;
+	};
+	const preview = () => {
+		previewFunction({
+			reset: resetPreview,
+			play,
+			pause,
+			init,
+			song_url,
+			preview_start_time,
+			audio,
+			playing
+		});
+	};
 </script>
 
-<div class="card" bind:this={card}>
+<div class="card" bind:this={card} on:mouseenter={mouseenter} on:mouseleave={mouseleave}>
 	{#if link}
-		<a class="chart-page" href="/charts/{id}">this text is invisible</a>
+		<a on:click={pause} class="chart-page" href="/charts/{id}">this text is invisible</a>
 		<a href="/download/{id}" class="download">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -33,9 +82,10 @@
 			</svg>
 		</a>
 	{/if}
-	<div class="album">
+	<div class="album" style="background-image: url({album_url})">
+		<!-- <img class="album" src={album_url} alt="" /> -->
 		{#if hover}
-			<div class="preview">
+			<div class="preview" in:fade={{ duration: 100 }} on:click={preview} on:keydown={preview}>
 				{#if playing}
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +115,7 @@
 				{/if}
 			</div>
 		{/if}
-		<img class="album" src={album_url} alt="" />
+		<!-- <img class="album" src={album_url} alt="" /> -->
 	</div>
 	<div class="title">{name}</div>
 	<div class="artist">{artist}</div>
@@ -107,6 +157,8 @@
 
 	.card .album {
 		position: relative;
+		background-size: cover;
+		z-index: 1;
 		width: calc(100px - 2 * 10px);
 		height: calc(100px - 2 * 10px);
 	}
@@ -150,13 +202,17 @@
 		grid-row: 5/6;
 	}
 	.preview {
-		position: absolute;
-		top: 0;
-		left: 0;
+		position: relative;
 		width: 100%;
 		height: 100%;
-		background-color: rgba(0, 0, 0.5);
-		backdrop-filter: blur(5px);
-		z-index: 10;
+		display: grid;
+		place-items: center;
+		background-color: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(2px);
+		z-index: 2;
+		cursor: pointer;
+	}
+	.preview svg {
+		width: 30px;
 	}
 </style>
