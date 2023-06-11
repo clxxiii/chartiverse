@@ -58,6 +58,7 @@
 	.charts {
 		width: 100%;
 		max-width: 1100px;
+		min-height: calc(100vh - 50px);
 		margin: auto;
 		background-color: var(--ctp-mocha-surface1);
 	}

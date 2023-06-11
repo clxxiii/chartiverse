@@ -3,7 +3,7 @@
 	import Profile from './Profile.svelte';
 	import { PUBLIC_UPLOAD_ENABLED_USERS } from '$env/static/public';
 
-	export let user: User | null;
+	export let user: User | null | undefined;
 
 	let uploadEnabled = true;
 	const allowedUploadUsers = JSON.parse(PUBLIC_UPLOAD_ENABLED_USERS);
@@ -14,7 +14,7 @@
 	}
 </script>
 
-<header class="header">
+<div class="header">
 	<div class="title">Chartiverse</div>
 	<nav>
 		<a href="/">charts</a>
@@ -39,15 +39,15 @@
 		{/if}
 		<Profile {user} />
 	</div>
-</header>
+</div>
 
 <style>
-	header {
+	.header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		padding: 0px 10px;
-		height: 50px;
+		height: 100%;
 		background-color: var(--ctp-mocha-mantle);
 	}
 	.upload {
