@@ -128,7 +128,7 @@
 	.chart-page {
 		position: absolute;
 		color: transparent;
-		z-index: 1;
+		z-index: 0;
 		width: 100%;
 		height: 100%;
 	}
@@ -141,7 +141,7 @@
 		padding: 10px;
 		height: 80px;
 		width: 300px;
-		background-color: var(--ctp-mocha-surface2);
+		background-color: var(--bg600);
 		font-family: Quicksand;
 		font-size: 12px;
 		font-weight: 500;
@@ -152,7 +152,7 @@
 		width: 15px;
 		height: 15px;
 		transition: all 200ms ease;
-		color: var(--ctp-mocha-text);
+		color: var(--text);
 	}
 
 	.card .album {
@@ -167,7 +167,7 @@
 		display: grid;
 		place-items: center;
 		appearance: none;
-		background-color: var(--ctp-mocha-surface1);
+		background-color: var(--bg500);
 		transition: all 200ms ease;
 		border: none;
 		padding: 5px;
@@ -179,10 +179,10 @@
 		z-index: 2;
 	}
 	.download:hover {
-		background-color: var(--ctp-mocha-sky);
+		background-color: var(--highlight);
 	}
 	.download:hover svg {
-		color: var(--ctp-mocha-base);
+		color: var(--bg400);
 	}
 	.title,
 	.artist,
@@ -198,7 +198,7 @@
 		grid-row: 3/4;
 	}
 	.charter {
-		color: var(--ctp-mocha-lavender);
+		color: var(--link-color);
 		grid-row: 5/6;
 	}
 	.preview {
@@ -214,5 +214,6 @@
 	}
 	.preview svg {
 		width: 30px;
+		color: var(--text);
 	}
 </style>

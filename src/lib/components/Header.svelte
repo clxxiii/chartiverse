@@ -48,7 +48,7 @@
 		justify-content: space-between;
 		padding: 0px 10px;
 		height: 100%;
-		background-color: var(--ctp-mocha-mantle);
+		background-color: var(--bg200);
 	}
 	.upload {
 		width: 50px;
@@ -56,18 +56,18 @@
 		margin-right: 1rem;
 		display: grid;
 		place-items: center;
-		background-color: var(--ctp-mocha-surface1);
+		background-color: var(--bg500);
 		transition: background-color 200ms ease;
 		border-radius: 5px;
 	}
 	.upload:hover {
-		background-color: var(--ctp-mocha-sky);
+		background-color: var(--highlight);
 	}
 	.upload:hover svg {
-		color: var(--ctp-mocha-base);
+		color: var(--bg400);
 	}
 	.upload svg {
-		color: var(--ctp-mocha-text);
+		color: var(--text);
 		width: 20px;
 		transition: color 200ms ease;
 		height: 20px;

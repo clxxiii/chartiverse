@@ -41,7 +41,7 @@
 
 	const uploadChart = async () => {
 		progressBar.textContent = '';
-		progressBar.style.backgroundColor = 'ctp(--ctp-mocha-base)';
+		progressBar.style.backgroundColor = 'ctp(--bg400)';
 		progressBar.style.height = '10px';
 		progressBar.classList.remove('button-mode');
 
@@ -124,7 +124,7 @@
 
 	.upload-chart {
 		position: relative;
-		background-color: var(--ctp-mocha-mantle);
+		background-color: var(--bg200);
 		display: grid;
 		place-items: center;
 		width: 300px;
@@ -139,8 +139,8 @@
 	}
 
 	.button-mode.upload-chart:hover {
-		background-color: var(--ctp-mocha-sky);
-		color: var(--ctp-mocha-base);
+		background-color: var(--highlight);
+		color: var(--bg400);
 		cursor: pointer;
 	}
 

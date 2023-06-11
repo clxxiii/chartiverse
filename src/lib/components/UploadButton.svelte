@@ -15,11 +15,11 @@
 	const filedrop = (e: CustomEvent) => {
 		dispatch('filedrop', e.detail);
 	};
-	const dragenter = () => (filedropClass.style.border = 'dashed 3px var(--ctp-mocha-sky)');
-	const dragleave = () => (filedropClass.style.border = 'dashed 3px var(--ctp-mocha-crust)');
+	const dragenter = () => (filedropClass.style.border = 'dashed 3px var(--highlight)');
+	const dragleave = () => (filedropClass.style.border = 'dashed 3px var(--bg100)');
 
 	export const error = (message: string) => {
-		filedropClass.style.border = 'dashed 3px var(--ctp-mocha-red)';
+		filedropClass.style.border = 'dashed 3px var(--error)';
 		msg = message;
 	};
 </script>
@@ -51,10 +51,10 @@
 		height: 12rem;
 		display: grid;
 		place-items: center;
-		background-color: var(--ctp-mocha-mantle);
+		background-color: var(--bg200);
 		border-radius: 25px;
-		border: dashed 3px var(--ctp-mocha-crust);
-		color: var(--ctp-mocha-surface1);
+		border: dashed 3px var(--bg100);
+		color: var(--bg500);
 		font-weight: bold;
 		font-size: 12px;
 		cursor: pointer;
@@ -74,9 +74,9 @@
 		pointer-events: none;
 	}
 	.filedrop:hover {
-		border: dashed 3px var(--ctp-mocha-surface1);
+		border: dashed 3px var(--bg500);
 	}
 	.filedrop:focus-visible {
-		border: dashed 3px var(--ctp-mocha-sky);
+		border: dashed 3px var(--highlight);
 	}
 </style>

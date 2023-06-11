@@ -62,10 +62,10 @@
 		padding: 10px;
 		border-radius: 5px;
 		text-transform: uppercase;
-		background: var(--ctp-mocha-sky);
+		background: var(--highlight);
 		font-weight: 600;
 		text-decoration: none;
-		color: var(--ctp-mocha-base);
+		color: var(--bg400);
 	}
 	.profile-button {
 		display: flex;
@@ -75,11 +75,12 @@
 		height: 30px;
 		padding: 5px;
 		cursor: pointer;
+		z-index: 10;
 		border-radius: 5px;
 		transition: background-color 200ms ease;
 	}
 	.profile-button:hover {
-		background-color: var(--ctp-mocha-surface1);
+		background-color: var(--bg500);
 	}
 	.profile-button img {
 		width: 30px;
@@ -87,11 +88,13 @@
 		height: 30px;
 	}
 	.menu hr {
-		border: solid 0.5px var(--ctp-mocha-surface2);
+		border: solid 0.5px var(--bg600);
 	}
 
 	.click-catcher {
-		position: absolute;
+		position: fixed;
+		width: 100vw;
+		height: 100vh;
 		inset: 0;
 		background-color: transparent;
 		border: 0;
@@ -114,8 +117,8 @@
 		inset: 0;
 		opacity: 0.5;
 		border-radius: 5px;
-		border: 1px solid var(--ctp-mocha-surface2);
-		background-color: var(--ctp-mocha-surface1);
+		border: 1px solid var(--bg600);
+		background-color: var(--bg500);
 		z-index: -1;
 	}
 	.menu .close {
@@ -128,7 +131,7 @@
 		cursor: pointer;
 	}
 	.menu .close:hover {
-		background-color: var(--ctp-mocha-surface2);
+		background-color: var(--bg600);
 	}
 	.menu .user {
 		display: flex;
@@ -140,7 +143,7 @@
 		border-radius: 5px;
 		width: fit-content;
 
-		color: var(--ctp-mocha-text);
+		color: var(--text);
 		text-decoration: none;
 		transition: 100ms ease;
 	}
@@ -150,11 +153,11 @@
 		border-radius: 40px;
 	}
 	.menu .user:hover {
-		background-color: var(--ctp-mocha-surface2);
+		background-color: var(--bg600);
 	}
 	.menu nav a,
 	.menu .logout {
-		color: var(--ctp-mocha-sky);
+		color: var(--highlight);
 		font-family: 'Quicksand';
 		background: transparent;
 		font-size: 16px;
@@ -172,15 +175,15 @@
 		transition: 100ms ease;
 	}
 	.menu nav a:hover {
-		background-color: var(--ctp-mocha-surface2);
+		background-color: var(--bg600);
 	}
 
 	.menu .logout {
-		color: var(--ctp-mocha-red);
+		color: var(--error);
 	}
 
 	.menu .logout:hover {
-		background-color: var(--ctp-mocha-red);
-		color: var(--ctp-mocha-base);
+		background-color: var(--error);
+		color: var(--bg400);
 	}
 </style>

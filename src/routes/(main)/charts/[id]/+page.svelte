@@ -33,10 +33,10 @@
 		height: fit-content;
 		margin: auto;
 		margin-top: 3rem;
-		background-color: var(--ctp-mocha-surface2);
+		background-color: var(--bg600);
 	}
 	.metadata {
-		background-color: var(--ctp-mocha-surface1);
+		background-color: var(--bg500);
 		font-family: 'Quicksand';
 		height: 200px;
 		display: flex;

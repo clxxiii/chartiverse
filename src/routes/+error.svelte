@@ -24,7 +24,7 @@
 		width: 100%;
 		text-align: center;
 		font-size: 50vh;
-		color: var(--ctp-mocha-mantle);
+		color: var(--bg200);
 	}
 	p {
 		text-align: center;
