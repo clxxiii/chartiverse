@@ -76,6 +76,13 @@
 		on:mousedown={seekMouseDown}
 		on:mouseup={seekMouseUp}
 	>
+		<div class="percentage">
+			{#if percentage}
+				{Math.round(percentage * 100)}%
+			{:else}
+				0%
+			{/if}
+		</div>
 		<!-- {#each sections as section}
 			<div class="section">{section.value}</div>
 		{/each} -->
@@ -96,7 +103,7 @@
 		right: 1rem;
 		bottom: 1rem;
 		background-color: #fff9;
-		width: 3rem;
+		width: 4rem;
 	}
 	.seekbar .bar {
 		height: 100%;
@@ -110,6 +117,20 @@
 		height: 100vh;
 		width: 100vw;
 		background-color: #000;
+	}
+	.percentage {
+		position: absolute;
+		top: 0;
+		right: 0;
+		color: white;
+		font-size: bold;
+		text-shadow: 0px 3px 5px rgba(0, 0, 0, 0.5);
+		font-family: 'Poppins';
+		font-size: 1.5rem;
+		pointer-events: none;
+		user-select: none;
+		width: 100%;
+		text-align: center;
 	}
 	.highway-wrapper {
 		position: absolute;
