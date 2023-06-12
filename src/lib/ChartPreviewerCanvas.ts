@@ -17,6 +17,7 @@ class ChartPreviewer {
 	length = NaN;
 	frameCallback: ((num: number) => void) | undefined;
 	playbackPercentage = 0;
+	playing: boolean;
 	runInterval: NodeJS.Timer | undefined;
 	audio: HTMLAudioElement;
 
@@ -31,6 +32,7 @@ class ChartPreviewer {
 		this.chart = chart;
 		this.height = height ?? 720;
 		this.width = width ?? this.height * (9 / 16);
+		this.playing = false;
 
 		this.noteSize =
 			(this.width - this.width * sidePaddingPercent * 2 - this.width * notePaddingPercent * 4) / 5;
@@ -52,16 +54,20 @@ class ChartPreviewer {
 
 	play() {
 		this.runInterval = setInterval(() => {
+			if (this.playbackPercentage >= 1) this.pause();
+
 			this._renderFrame(this.frame);
 			this.frame = this.frame + frameTime;
 			this.playbackPercentage = this.frame / this.length;
 			if (this.frameCallback) this.frameCallback(this.playbackPercentage);
 		}, frameTime);
+		this.playing = true;
 		this.audio.play();
 	}
 
 	pause() {
 		clearInterval(this.runInterval);
+		this.playing = false;
 		this.audio.pause();
 	}
 

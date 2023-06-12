@@ -17,12 +17,10 @@
 	$: previewer && (previewer.audio.volume = volume / 100);
 
 	const playPause = () => {
-		if (playButton.textContent == 'Play') {
-			previewer.play();
-			playButton.textContent = 'Pause';
-		} else {
+		if (previewer.playing) {
 			previewer.pause();
-			playButton.textContent = 'Play';
+		} else {
+			previewer.play();
 		}
 	};
 
@@ -36,7 +34,9 @@
 
 	const seek = (event: MouseEvent) => {
 		if (!seekClicked) return;
-		const mousePosition = (seekbarHeight - event.clientY) / seekbarHeight;
+
+		let mousePosition = (seekbarHeight - event.offsetY) / seekbarHeight;
+		// I cannot explain why I need this, all I know is that it aligns the mouse pointer correctly
 		percentage = mousePosition;
 		previewer.seek(percentage);
 	};
@@ -62,7 +62,13 @@
 	<div class="highway-wrapper">
 		<canvas bind:this={canvas} />
 	</div>
-	<button class="play" bind:this={playButton} on:click={playPause}>Play</button>
+	<button class="play" bind:this={playButton} on:click={playPause}>
+		{#if previewer?.playing}
+			Pause
+		{:else}
+			Play
+		{/if}
+	</button>
 	<div
 		class="seekbar"
 		bind:offsetHeight={seekbarHeight}
@@ -94,6 +100,7 @@
 	}
 	.seekbar .bar {
 		height: 100%;
+		pointer-events: none;
 		border-bottom: solid 3px rgb(255, 255, 255);
 	}
 	.previewer {
