@@ -84,7 +84,7 @@
 	{/if}
 	<div class="album" style="background-image: url({album_url})">
 		<!-- <img class="album" src={album_url} alt="" /> -->
-		{#if hover}
+		{#if hover && link}
 			<div class="preview" in:fade={{ duration: 100 }} on:click={preview} on:keydown={preview}>
 				{#if playing}
 					<svg
