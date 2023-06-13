@@ -186,4 +186,9 @@
 		background-color: var(--error);
 		color: var(--bg400);
 	}
+	@media screen and (max-width: 600px) {
+		.label {
+			display: none;
+		}
+	}
 </style>

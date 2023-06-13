@@ -35,7 +35,7 @@
 </script>
 
 <svelte:head>
-	<title>Chartiverse</title>
+	<title>Chart Listing | Chartiverse</title>
 </svelte:head>
 
 <div class="charts">

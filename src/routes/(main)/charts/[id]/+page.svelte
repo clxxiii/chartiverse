@@ -5,7 +5,7 @@
 
 <svelte:head>
 	<title>
-		{artist} - {name} by {charter}
+		{artist} - {name} by {charter} | Chartiverse
 	</title>
 </svelte:head>
 

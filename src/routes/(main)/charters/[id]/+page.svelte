@@ -55,16 +55,18 @@
 	</div>
 	<div class="chart-list">
 		<h1>{charter.username}'s Charts</h1>
-		{#each charter.charts as chart}
-			<ChartCard {chart} {previewFunction} link />
-		{/each}
+		<div class="charts">
+			{#each charter.charts as chart}
+				<ChartCard {chart} {previewFunction} link />
+			{/each}
+		</div>
 	</div>
 </div>
 
 <style>
 	.page {
 		max-width: 1100px;
-		min-height: calc(100vh - 40px);
+		min-height: calc(100vh - 40px - 10px); /* height - header - padding */
 		margin: auto;
 		display: grid;
 		grid-template-columns: 400px calc(100% - 400px);
@@ -85,8 +87,30 @@
 		width: 75px;
 		height: 75px;
 	}
+	.charts {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 15px;
+	}
 	.chart-list {
 		padding: 10px;
 		background-color: var(--bg500);
+	}
+	@media screen and (max-width: 1100px) {
+		.page {
+			grid-template-columns: 200px calc(100% - 200px);
+		}
+	}
+	@media screen and (max-width: 600px) {
+		.page {
+			grid-template-columns: 100%;
+		}
+		.sidebar {
+			grid-row: 1/2;
+		}
+		.chart-list {
+			grid-row: 2/3;
+		}
 	}
 </style>

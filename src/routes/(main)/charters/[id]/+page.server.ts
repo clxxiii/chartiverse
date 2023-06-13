@@ -20,7 +20,6 @@ export const load: ServerLoad = async ({ params }) => {
 			}
 		}
 	});
-	console.log(charter)
 
 	if (!charter) {
 		throw error(StatusCodes.NOT_FOUND, 'Charter not found');

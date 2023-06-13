@@ -14,10 +14,10 @@
 </script>
 
 <div class="header">
-	<div class="title">Chartiverse</div>
-	<nav>
-		<a href="/">charts</a>
-	</nav>
+	<a class="icon" href="/">
+		<img src="/favicon-32x32.png" alt="" />
+		<div class="title">Chartiverse</div>
+	</a>
 	<div class="profile">
 		{#if uploadEnabled}
 			<a href="/upload" class="upload">
@@ -59,6 +59,16 @@
 		transition: background-color 200ms ease;
 		border-radius: 5px;
 	}
+	.icon {
+		display: flex;
+		align-items: center;
+		color: var(--text);
+		text-decoration: none;
+		gap: 7px;
+	}
+	.icon img {
+		width: 25px;
+	}
 	.upload:hover {
 		background-color: var(--highlight);
 	}
@@ -74,5 +84,10 @@
 	.profile {
 		display: flex;
 		align-items: center;
+	}
+	@media screen and (max-width: 600px) {
+		.icon .title {
+			display: none;
+		}
 	}
 </style>
