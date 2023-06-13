@@ -18,7 +18,6 @@
 
 	let charts = data.charts;
 	let currentSongPreview: AudioPreview;
-	let chartlist: HTMLDivElement;
 
 	let previewFunction = (preview: AudioPreview) => {
 		if (currentSongPreview?.song_url == preview.song_url) {
@@ -40,7 +39,7 @@
 
 <div class="charts">
 	<!-- <Searchbar on:searchstart={searchstart} on:searchend={searchend} /> -->
-	<div bind:this={chartlist} class="chart-list">
+	<div class="chart-list">
 		{#each charts as chart}
 			<ChartCard link {chart} {previewFunction} />
 		{/each}

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Chart } from '@prisma/client';
 	import { fade } from 'svelte/transition';
+	import DownloadButton from './DownloadButton.svelte';
 
 	export let chart: Chart;
 	type AudioPreview = {
@@ -65,7 +66,10 @@
 <div class="card" bind:this={card} on:mouseenter={mouseenter} on:mouseleave={mouseleave}>
 	{#if link}
 		<a on:click={pause} class="chart-page" href="/charts/{id}">this text is invisible</a>
-		<a href="/download/{id}" class="download">
+		<div class="download">
+			<DownloadButton {id} />
+		</div>
+		<!-- <a href="/download/{id}" class="download">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
@@ -80,7 +84,7 @@
 					d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
 				/>
 			</svg>
-		</a>
+		</a> -->
 	{/if}
 	<div class="album" style="background-image: url({album_url})">
 		<!-- <img class="album" src={album_url} alt="" /> -->
@@ -148,12 +152,6 @@
 		transition: scale 200ms ease;
 		z-index: 0;
 	}
-	.download svg {
-		width: 15px;
-		height: 15px;
-		transition: all 200ms ease;
-		color: var(--text);
-	}
 
 	.card .album {
 		position: relative;
@@ -164,25 +162,9 @@
 	}
 	.download {
 		position: absolute;
-		display: grid;
-		place-items: center;
-		appearance: none;
-		background-color: var(--bg500);
-		transition: all 200ms ease;
-		border: none;
-		padding: 5px;
-		border-radius: 5px;
 		bottom: 5px;
 		right: 5px;
-		width: 30px;
-		height: 15px;
 		z-index: 2;
-	}
-	.download:hover {
-		background-color: var(--highlight);
-	}
-	.download:hover svg {
-		color: var(--bg400);
 	}
 	.title,
 	.artist,
