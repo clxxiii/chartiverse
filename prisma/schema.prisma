@@ -11,13 +11,16 @@ datasource db {
 }
 
 model Chart {
-  id         String   @id @default(uuid())
+  id String @id @default(uuid())
+
   // Core Info
-  name       String   @default("Unknown Title")
-  artist     String   @default("Unknown Artist")
-  charter    String   @default("Unknown Charter")
-  date_added DateTime @default(now())
-  tag        String   @default("WIP")
+  name         String   @default("Unknown Title")
+  artist       String   @default("Unknown Artist")
+  charter      String   @default("Unknown Charter")
+  last_updated DateTime @default(now())
+  date_added   DateTime @default(now())
+  status       String   @default("WIP")
+  visibility   Int      @default(1) // 0: Public, 1: Unlisted, 2: Private
 
   // Additional Metadata
   album              String @default("Unknown Album")
@@ -30,6 +33,8 @@ model Chart {
   modchart           Int    @default(0)
   album_track        Int    @default(16000)
   playlist_track     Int    @default(16000)
+  download_count     Int    @default(0)
+  tags               String @default("")
 
   // Difficulties
   diff_band            Int @default(-1)
@@ -53,27 +58,40 @@ model Chart {
   frets           Int @default(0)
 
   // Files
-  song_url  String @default("")
-  chart_url String @default("")
-  album_url String @default("")
+  song_url       String  @default("")
+  chart_url      String  @default("")
+  album_url      String  @default("")
+  background_url String?
+  icon_url       String?
 
-  user    User?   @relation(fields: [user_id, charter], references: [id, username])
-  user_id String?
+  audio_type      String  @default("ogg")
+  album_type      String  @default("png")
+  background_type String?
+  icon_type       String?
+
+  user     User?   @relation(fields: [user_id, username], references: [id, username])
+  username String?
+  user_id  String?
 }
 
 model Session {
   id String @id @default(uuid())
 
-  user    User?    @relation(fields: [user_id], references: [id])
-  user_id String?
-  state   String? @unique // This property is used for Oauth. Once logged in, it is not used again.
+  user      User?    @relation(fields: [user_id], references: [id])
+  user_id   String?
+  last_used DateTime @default(now())
+  state     String?  @unique // This property is used for Oauth. Once logged in, it is not used again.
 }
 
 model User {
-  id         String  @id @default(uuid())
-  username   String?
-  avatar_url String?
-  charts     Chart[]
+  id              String  @id @default(uuid())
+  username        String?
+  avatar_url      String?
+  colortheme      String?
+  highlight_color String?
+
+  charts Chart[]
+  posts  Post[]
 
   discord_oauth DiscordOauth?
   discord_id    String?       @unique
@@ -106,4 +124,26 @@ model TwitchOauth {
 
   user    User   @relation(fields: [user_id], references: [id])
   user_id String @id
+}
+
+model Post {
+  id String @id @default(uuid())
+
+  author          User     @relation(fields: [user_id], references: [id])
+  user_id         String
+  date_posted     DateTime
+  time_code_start Int
+  time_code_end   Int
+
+  replies PostReplies? @relation(name: "parent")
+
+  reply_to    PostReplies? @relation(fields: [reply_to_id], references: [parent_id])
+  reply_to_id String?
+}
+
+model PostReplies {
+  parent    Post   @relation(name: "parent", fields: [parent_id], references: [id])
+  parent_id String @id @unique
+
+  replies Post[]
 }
