@@ -49,5 +49,16 @@ export const actions: Actions = {
 				}
 			});
 		}
+	},
+	'change-theme': async ({ request, cookies }) => {
+		const data = await request.json();
+		const theme = data.id
+
+		if (theme) {
+			cookies.set("colortheme", theme, {
+				path: "/",
+				maxAge: 60 * 60 * 24 * 31
+			})
+		}
 	}
 };

@@ -1,5 +1,12 @@
 <script lang="ts">
+	import ThemePreview from '$lib/components/ThemePreview.svelte';
+	import { DevicePhoneMobile, Icon, PaintBrush, User } from 'svelte-hero-icons';
+
 	export let data;
+
+	type Payload = {
+		username?: string;
+	};
 
 	let settingsPage = 'User';
 
@@ -18,14 +25,16 @@
 	};
 
 	const typingEnd = async () => {
+		if (!data.user) return;
+
 		typing = false;
-		const payload: { [key: string]: string } = {};
+		const payload: Payload = {};
 
 		if (data?.user?.username != username) {
 			payload['username'] = username;
+			data.user.username = username;
 		}
 		await save(payload);
-		data.user = { ...payload };
 	};
 
 	const save = async (payload: { [key: string]: string }) => {
@@ -43,9 +52,27 @@
 <div class="page">
 	<div class="sidebar">
 		<h1>Settings</h1>
-		<button on:click={() => (settingsPage = 'User')}>User Settings</button>
-		<button on:click={() => (settingsPage = 'Appearance')}>Appearance</button>
-		<button on:click={() => (settingsPage = 'Devices')}>Devices</button>
+		<hr />
+		<button on:click={() => (settingsPage = 'User')}>
+			<span class="icon">
+				<Icon src={User} width="25" />
+			</span>
+			<span class="label">Account</span>
+		</button>
+		<button on:click={() => (settingsPage = 'Appearance')}>
+			<span class="icon">
+				<Icon src={PaintBrush} width="25" />
+			</span>
+
+			<span class="label">Appearance</span>
+		</button>
+		<button on:click={() => (settingsPage = 'Devices')}>
+			<span class="icon">
+				<Icon src={DevicePhoneMobile} width="25" />
+			</span>
+
+			<span class="label">Devices</span>
+		</button>
 	</div>
 	<div class="content">
 		{#if settingsPage == 'User'}
@@ -53,7 +80,22 @@
 			<input on:keydown={keydown} bind:value={username} type="text" name="" id="" />
 		{:else if settingsPage == 'Appearance'}
 			<h1>Appearance Settings</h1>
-			<button>Choose Appearance</button>
+			<div class="themes">
+				<h2>Side-wide Theme</h2>
+				<div class="flex">
+					<div class="catpuccin-mocha">
+						<ThemePreview name="Catpuccin Mocha" id="catppuccin-mocha" />
+					</div>
+					<div class="catpuccin-frappe">
+						<ThemePreview name="Catpuccin Frappe" id="catppuccin-frappe" />
+					</div>
+					<div class="amoled">
+						<ThemePreview name="Amoled" id="amoled" />
+					</div>
+				</div>
+			</div>
+		{:else if settingsPage == 'Devices'}
+			<h1>Device Settings</h1>
 		{/if}
 	</div>
 </div>
@@ -65,6 +107,41 @@
 		margin: auto;
 		display: grid;
 		grid-template-columns: 250px calc(100% - 250px);
+	}
+	.flex {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 20px;
+		justify-content: center;
+	}
+	.sidebar button {
+		display: grid;
+		grid-template-columns: 30px calc(100% - 30px);
+		gap: 5px;
+		margin: 5px 0px;
+		align-items: center;
+		width: 100%;
+		background: 0;
+		border: 0;
+		font-family: 'Poppins';
+		border-radius: 10px;
+		color: var(--text);
+		transition: background-color 150ms ease;
+		cursor: pointer;
+	}
+	.sidebar button:hover {
+		background: var(--bg500);
+	}
+	.sidebar .label {
+		text-align: left;
+		transition: 150ms ease;
+	}
+	.sidebar button:hover .label {
+		transform: translateX(10px);
+	}
+	.sidebar button .icon {
+		width: 30px;
+		height: 30px;
 	}
 	h1 {
 		margin: 0;

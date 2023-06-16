@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -70,6 +70,9 @@ devDependencies:
   svelte-check:
     specifier: ^3.0.1
     version: 3.4.3(postcss@8.4.23)(svelte@3.59.1)
+  svelte-hero-icons:
+    specifier: ^5.0.0
+    version: 5.0.0
   tslib:
     specifier: ^2.4.1
     version: 2.5.2
@@ -447,6 +450,10 @@ packages:
       picomatch: 2.3.1
       rollup: 3.23.0
     dev: false
+
+  /@steeze-ui/heroicons@2.2.2:
+    resolution: {integrity: sha512-VUkgSAbjLzsEuF4kDQDESANb/NNxqhkOMnrzD1VhB3tSGr7wVZ5FKS7aM2QZcKXjziwR6dbt7Nhs3fpZhqOi1A==}
+    dev: true
 
   /@sveltejs/adapter-node@1.2.4(@sveltejs/kit@1.19.0):
     resolution: {integrity: sha512-TNnhS+OKRZ9RKnC+ho5mlE2FJquI61i0v7yOXxBUSU3LAoYH2kwVVL8P8ecjefmZ8BOfM1V54pBnDODBU5CEaA==}
@@ -2182,6 +2189,13 @@ packages:
       eslint-visitor-keys: 3.4.1
       espree: 9.5.2
       svelte: 3.59.1
+    dev: true
+
+  /svelte-hero-icons@5.0.0:
+    resolution: {integrity: sha512-xKMI/Z0f/6831I0R1YKJjVbAw9VBD6XKysvng6LtomlS4n3ZD1lZNAfLrrCmnc1pmiLr/8sVeQA8kgHLQwYlRg==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      '@steeze-ui/heroicons': 2.2.2
     dev: true
 
   /svelte-hmr@0.15.1(svelte@3.59.1):

@@ -2,6 +2,7 @@
 	import type { Chart } from '@prisma/client';
 	import { fade } from 'svelte/transition';
 	import DownloadButton from './DownloadButton.svelte';
+	import { Icon, Pause, Play } from 'svelte-hero-icons';
 
 	export let chart: Chart;
 	type AudioPreview = {
@@ -19,11 +20,15 @@
 	export let link = false;
 	export let previewFunction: (arg0: AudioPreview) => void;
 
-	const { id, name, artist, charter, album_url, song_url, preview_start_time } = chart;
+	const { id, name, artist, charter, album_url, song_url, preview_start_time, song_length } = chart;
 
 	let hover = false;
 	let playing = false;
 	let audio: HTMLAudioElement;
+
+	const seconds = Math.round(song_length / 1000) % 60;
+	const minutes = Math.round(song_length / 1000 / 60);
+	const time = `${minutes}:${seconds > 10 ? seconds : '0' + seconds}`;
 
 	const mouseenter = () => {
 		hover = true;
@@ -69,58 +74,33 @@
 		<div class="download">
 			<DownloadButton {id} />
 		</div>
-		<!-- <a href="/download/{id}" class="download">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke-width="1.5"
-				stroke="currentColor"
-				class="w-6 h-6"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
-				/>
-			</svg>
-		</a> -->
 	{/if}
 	<div class="album" style="background-image: url({album_url})">
 		<!-- <img class="album" src={album_url} alt="" /> -->
 		{#if hover && link}
 			<div class="preview" in:fade={{ duration: 100 }} on:click={preview} on:keydown={preview}>
 				{#if playing}
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						fill="currentColor"
-						class="w-6 h-6"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M6.75 5.25a.75.75 0 01.75-.75H9a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V5.25zm7.5 0A.75.75 0 0115 4.5h1.5a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75V5.25z"
-							clip-rule="evenodd"
-						/>
-					</svg>
+					<Icon src={Pause} solid width="30" />
 				{:else}
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						fill="currentColor"
-						class="w-6 h-6"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
-							clip-rule="evenodd"
-						/>
-					</svg>
+					<Icon src={Play} solid width="30" />
 				{/if}
 			</div>
 		{/if}
-		<!-- <img class="album" src={album_url} alt="" /> -->
 	</div>
+	<!-- <div class="length">
+		{time}
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			height="48"
+			viewBox="0 -960 960 960"
+			width="48"
+			stroke="currentColor"
+			fill="currentColor"
+			><path
+				d="M480-200q117 0 198.5-81.5T760-480q0-117-81.5-198.5T480-760v280L289-280q37 39 87 59.5T480-200Zm.033 125.978q-83.468 0-157.541-31.878-74.073-31.879-129.393-87.199-55.32-55.32-87.199-129.36-31.878-74.04-31.878-157.508 0-84.468 31.878-158.541 31.879-74.073 87.161-128.906 55.283-54.832 129.341-86.818 74.057-31.986 157.545-31.986 84.488 0 158.589 31.968 74.102 31.967 128.916 86.768 54.815 54.801 86.79 128.883Q886.218-564.516 886.218-480q0 83.501-31.986 157.57-31.986 74.069-86.818 129.36-54.833 55.291-128.873 87.17-74.04 31.878-158.508 31.878Zm-.033-68.13q141.043 0 239.446-98.752Q817.848-339.656 817.848-480q0-141.043-98.402-239.446-98.403-98.402-239.566-98.402-140.163 0-238.945 98.402-98.783 98.403-98.783 239.566 0 140.163 98.752 238.945Q339.656-142.152 480-142.152ZM480-480Z"
+			/></svg
+		>
+	</div> -->
 	<div class="title">{name}</div>
 	<div class="artist">{artist}</div>
 	<div class="charter">
@@ -139,8 +119,8 @@
 	.card {
 		position: relative;
 		display: grid;
-		grid-template-columns: 80px 5px calc(100% - 75px);
-		grid-template-rows: 1em 5px 1em 10px 1em;
+		grid-template-columns: 80px 5px calc(100% - 5px - 80px - 5px - 30px) 5px 45px;
+		grid-template-rows: 1.25em 5px 1.25em 5px 1.25em;
 		transform-style: preserve-3d;
 		padding: 10px;
 		height: 80px;
@@ -194,8 +174,13 @@
 		z-index: 2;
 		cursor: pointer;
 	}
-	.preview svg {
-		width: 30px;
+	.length {
+		grid-row: 1/2;
+		grid-column: 5/6;
+	}
+	.length svg {
 		color: var(--text);
+		width: 15px;
+		height: 15px;
 	}
 </style>

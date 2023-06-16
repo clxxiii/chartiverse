@@ -2,6 +2,7 @@
 	import type { User } from '@prisma/client';
 	import { fly } from 'svelte/transition';
 	import { browser } from '$app/environment';
+	import { Icon, XMark } from 'svelte-hero-icons';
 
 	export let user: User | null = null;
 
@@ -30,19 +31,8 @@
 				<img src={user.avatar_url} alt="" />
 				<div class="label">{user.username}</div>
 			</a>
-			<div class="close">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke-width="1.5"
-					on:click={close}
-					on:keydown={close}
-					stroke="currentColor"
-					class="w-6 h-6 close"
-				>
-					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-				</svg>
+			<div on:click={close} on:keydown={close} class="close">
+				<Icon src={XMark} width="50" />
 			</div>
 			<hr />
 			<nav>
@@ -125,7 +115,8 @@
 		position: absolute;
 		top: 5px;
 		right: 5px;
-		width: 40px;
+		width: 50px;
+		height: 50px;
 		transition: 200ms ease;
 		border-radius: 5px;
 		cursor: pointer;

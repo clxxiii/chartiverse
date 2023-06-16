@@ -9,7 +9,8 @@
 }
 
 html[data-theme="catppuccin-mocha"],
-html[data-theme="dark"] {
+html[data-theme="dark"],
+.catpuccin-mocha {
   --bg100: var(--ctp-mocha-crust);
   --bg200: var(--ctp-mocha-mantle);
   --bg400: var(--ctp-mocha-base);
@@ -26,7 +27,8 @@ html[data-theme="dark"] {
 }
 
 html[data-theme="catppuccin-frappe"],
-html[data-theme="light"] {
+html[data-theme="light"],
+.catpuccin-frappe {
   --bg100: var(--ctp-latte-crust);
   --bg200: var(--ctp-latte-mantle);
   --bg400: var(--ctp-latte-base);
@@ -42,7 +44,8 @@ html[data-theme="light"] {
   --success: var(--ctp-latte-green)
 }
 
-html[data-theme="amoled"] {
+html[data-theme="amoled"],
+.amoled {
   --bg100: #070707;
   --bg200: #090909;
   --bg400: #000;
