@@ -36,8 +36,8 @@
 			</div>
 			<hr />
 			<nav>
-				<a href="/charters/{user.id}">My Charts</a>
-				<a href="/settings">Settings</a>
+				<a on:click={close} href="/charters/{user.id}">My Charts</a>
+				<a on:click={close} href="/settings">Settings</a>
 				<button on:click={logout} class="logout">Logout</button>
 			</nav>
 		</div>
