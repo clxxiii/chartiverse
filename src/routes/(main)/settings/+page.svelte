@@ -77,7 +77,8 @@
 	<div class="content">
 		{#if settingsPage == 'User'}
 			<h1>User Settings</h1>
-			<input on:keydown={keydown} bind:value={username} type="text" name="" id="" />
+			<label for="display-name">Display Name</label>
+			<input on:keydown={keydown} bind:value={username} name="display-name" type="text" />
 		{:else if settingsPage == 'Appearance'}
 			<h1>Appearance Settings</h1>
 			<div class="themes">
@@ -142,6 +143,20 @@
 	.sidebar button .icon {
 		width: 30px;
 		height: 30px;
+	}
+	input[type='text'] {
+		color: var(--text);
+		outline: none;
+		font-family: 'Quicksand';
+		border: solid 2px var(--text);
+		border-radius: 6px;
+		padding: 5px;
+		font-size: 16px;
+		font-weight: 600;
+		background-color: var(--bg400);
+	}
+	input[type='text']:focus {
+		border: solid 2px var(--highlight);
 	}
 	h1 {
 		margin: 0;
