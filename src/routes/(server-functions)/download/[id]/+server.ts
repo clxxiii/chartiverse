@@ -35,11 +35,17 @@ export const GET: RequestHandler = async ({ params }) => {
 	const chart = await downloadFromUrl(chartMetadata.chart_url);
 	const song = await downloadFromUrl(chartMetadata.song_url);
 
+
 	const zip = new JSZip();
 	zip.file(`${chartMetadata.artist} - ${chartMetadata.name}/song.ini`, songIni);
-	zip.file(`${chartMetadata.artist} - ${chartMetadata.name}/album.jpg`, album);
+	zip.file(`${chartMetadata.artist} - ${chartMetadata.name}/album.${chartMetadata.album_type}`, album);
 	zip.file(`${chartMetadata.artist} - ${chartMetadata.name}/notes.chart`, chart);
-	zip.file(`${chartMetadata.artist} - ${chartMetadata.name}/song.ogg`, song);
+	zip.file(`${chartMetadata.artist} - ${chartMetadata.name}/song.${chartMetadata.audio_type}`, song);
+
+	if (chartMetadata.background_url) {
+		const background = downloadFromUrl(chartMetadata.background_url);
+		zip.file(`${chartMetadata.artist} - ${chartMetadata.name}/background.${chartMetadata.background_type}`, background);
+	}
 
 	const file = await zip.generateAsync({ type: 'uint8array' });
 

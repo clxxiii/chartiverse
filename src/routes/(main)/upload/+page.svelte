@@ -45,23 +45,24 @@
 		progressBar.style.height = '10px';
 		progressBar.classList.remove('button-mode');
 
-		const chartReq = await fetch('/api/upload', {
-			method: 'POST',
-			body: JSON.stringify(chart)
-		});
-		const chartInfo = await chartReq.json();
+		// const chartReq = await fetch('/api/upload', {
+		// 	method: 'POST',
+		// 	body: JSON.stringify(chart)
+		// });
+		// const chartInfo = await chartReq.json();
 		const files = await onupload(file);
 
-		await axios({
-			url: `/api/upload_files?id=${chartInfo.id}`,
+		const chartReq = await axios({
+			url: `/api/upload_files`,
 			method: 'PUT',
-			data: JSON.stringify(files),
+			data: JSON.stringify({ files, chart }),
 			maxBodyLength: 104857600,
 			onUploadProgress: (p) => (p.progress ? (uploadProgress = p.progress * 100) : '')
 		});
+		const chartInfo = chartReq.data;
 
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		if (browser) window.location.href = `/charts/${chartInfo.id}`;
+		console.log(chartInfo);
+		if (browser) window.location.href = `/charts/${chartInfo.chart.id}`;
 	};
 </script>
 
