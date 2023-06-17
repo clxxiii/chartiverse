@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { StatusCodes } from '$lib/StatusCodes';
 import JSZip from 'jszip';
-import { download } from '$lib/storage';
+import { downloadFromUrl } from '$lib/storage';
 
 const BLACKLISTED_PROPERIES = [
 	'id',
@@ -11,8 +11,12 @@ const BLACKLISTED_PROPERIES = [
 	'album_url',
 	'song_url',
 	'chart_url',
+	'visibility',
+	'status',
 	'date_added',
-	'tag'
+	'last_updated',
+	'tags',
+	'background_url'
 ];
 
 export const GET: RequestHandler = async ({ params }) => {
@@ -27,9 +31,9 @@ export const GET: RequestHandler = async ({ params }) => {
 		songIni += `${key} = ${chartMetadata[key]}\n`;
 	}
 
-	const album = await download(`/charts/${id}/album.jpg`);
-	const chart = await download(`/charts/${id}/notes.chart`);
-	const song = await download(`/charts/${id}/song.ogg`);
+	const album = await downloadFromUrl(chartMetadata.album_url);
+	const chart = await downloadFromUrl(chartMetadata.chart_url);
+	const song = await downloadFromUrl(chartMetadata.song_url);
 
 	const zip = new JSZip();
 	zip.file(`${chartMetadata.artist} - ${chartMetadata.name}/song.ini`, songIni);

@@ -39,3 +39,7 @@ export const upload = async (file: ArrayBuffer, path: string) => {
 	});
 	return request.data;
 };
+export const downloadFromUrl = async (url: string): Promise<ArrayBuffer> => {
+	const request = await fetch(url);
+	return request.arrayBuffer();
+}
