@@ -1,6 +1,5 @@
 <script lang="ts">
 	import ChartCard from '$lib/components/ChartCard.svelte';
-	// import Searchbar from '$lib/components/Searchbar.svelte';
 	import type { Chart as ChartType } from '@prisma/client';
 
 	export let data: { charts: ChartType[] };
@@ -38,7 +37,6 @@
 </svelte:head>
 
 <div class="charts">
-	<!-- <Searchbar on:searchstart={searchstart} on:searchend={searchend} /> -->
 	<div class="chart-list">
 		{#each charts as chart}
 			<ChartCard link {chart} {previewFunction} />

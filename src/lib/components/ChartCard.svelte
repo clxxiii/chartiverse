@@ -70,13 +70,12 @@
 
 <div class="card" bind:this={card} on:mouseenter={mouseenter} on:mouseleave={mouseleave}>
 	{#if link}
-		<a on:click={pause} class="chart-page" href="/charts/{id}">this text is invisible</a>
+		<a on:click={pause} class="chart-page" href="/charts/{id}">{artist} - {name}</a>
 		<div class="download">
 			<DownloadButton {id} />
 		</div>
 	{/if}
 	<div class="album" style="background-image: url({album_url})">
-		<!-- <img class="album" src={album_url} alt="" /> -->
 		{#if hover && link}
 			<div class="preview" in:fade={{ duration: 100 }} on:click={preview} on:keydown={preview}>
 				{#if playing}
@@ -174,7 +173,7 @@
 		z-index: 2;
 		cursor: pointer;
 	}
-	.length {
+	/* .length {
 		grid-row: 1/2;
 		grid-column: 5/6;
 	}
@@ -182,5 +181,5 @@
 		color: var(--text);
 		width: 15px;
 		height: 15px;
-	}
+	} */
 </style>
