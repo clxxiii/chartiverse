@@ -21,6 +21,7 @@
 	</style>
 
 	<meta name="description" content="Chart Search, Chart Previews, Chart Discussions, Chartiverse" />
+	<meta name="theme-color" content="#1e1e2e" />
 </svelte:head>
 
 <header>
