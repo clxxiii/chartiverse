@@ -8,6 +8,11 @@
   src: url("/Poppins-Regular.ttf");
 }
 
+@font-face {
+  font-family: Fira Code;
+  src: url("/FiraCode-VF.ttf");
+}
+
 html[data-theme="catppuccin-mocha"],
 html[data-theme="dark"],
 .catpuccin-mocha {
@@ -59,15 +64,4 @@ html[data-theme="amoled"],
   --error: var(--ctp-latte-red);
   --warning: var(--ctp-latte-yellow);
   --success: var(--ctp-latte-green)
-}
-
-body {
-  font-family: Poppins;
-  margin: 0;
-  background-color: var(--bg400);
-  color: var(--text);
-}
-
-a {
-  color: var(--link-color)
 }

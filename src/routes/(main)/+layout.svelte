@@ -6,6 +6,21 @@
 	export let data;
 </script>
 
+<svelte:head>
+	<style>
+		body {
+			font-family: Poppins;
+			margin: 0;
+			background-color: var(--bg400);
+			color: var(--text);
+		}
+
+		a {
+			color: var(--link-color);
+		}
+	</style>
+</svelte:head>
+
 <header>
 	<Header user={data.user} />
 </header>

@@ -1,15 +1,21 @@
 <script lang="ts">
-	import ChartPreviewer from '$lib/ChartPreviewerCanvas';
+	import ChartPreviewer, { speedFactorMS } from '$lib/ChartPreviewerCanvas';
 	import { onMount } from 'svelte';
+	import { Icon, Pause, Play } from 'svelte-hero-icons';
+	import Highway from '$lib/assets/highway.png';
+	import Background from '$lib/assets/background.png';
 
 	export let chart: ChartFile.Chart;
 	export let audioPath: string;
+	export let backgroundUrl: string | null = null;
+	export let highwayUrl = Highway;
 
 	let height: number;
 	let width: number;
 
+	const scrollMultiplier = 20;
+
 	let canvas: HTMLCanvasElement;
-	let playButton: HTMLButtonElement;
 	let previewer: ChartPreviewer;
 	let sections: ChartFile.Event[] = [];
 
@@ -19,16 +25,29 @@
 	const playPause = () => {
 		if (previewer.playing) {
 			previewer.pause();
+			previewer.playing = false;
 		} else {
 			previewer.play();
+			previewer.playing = true;
 		}
 	};
+
+	let playing: boolean;
+	$: playing = previewer?.playing;
 
 	let percentage: number;
 	let seekClicked = false;
 	let seekbarHeight = 0;
+	let highwayPos = 0;
+	let ms = 0;
+	let seconds = 0;
+	let minutes = 0;
 
 	const frameCallback = (num: number) => {
+		let frame = Math.round(num * previewer.length);
+		ms = frame % 1000;
+		seconds = Math.round(frame / 1000) % 60;
+		highwayPos = (frame / (speedFactorMS * 1.1)) * 100;
 		percentage = num;
 	};
 
@@ -36,7 +55,6 @@
 		if (!seekClicked) return;
 
 		let mousePosition = (seekbarHeight - event.offsetY) / seekbarHeight;
-		// I cannot explain why I need this, all I know is that it aligns the mouse pointer correctly
 		percentage = mousePosition;
 		previewer.seek(percentage);
 	};
@@ -49,26 +67,58 @@
 		seek(event);
 	};
 
+	const scroll = (event: WheelEvent) => {
+		if (previewer.playing) return;
+
+		const direction = -(event.deltaY / 100);
+
+		const frame = previewer.frame + direction * scrollMultiplier;
+		const percentage = frame / previewer.length;
+		previewer.seek(percentage);
+	};
+
 	onMount(() => {
 		const ctx = canvas.getContext('2d');
 		if (ctx == null) return;
-		previewer = new ChartPreviewer(ctx, chart, audioPath, height - 4);
+		previewer = new ChartPreviewer(ctx, chart, audioPath, height - 10);
 		previewer.setFrameCallback(frameCallback);
 		sections = chart.events.filter((x) => (x.type = 'section'));
 	});
 </script>
 
-<div class="previewer" bind:clientHeight={height} bind:clientWidth={width}>
+<div class="previewer" on:mousewheel={scroll} bind:clientHeight={height} bind:clientWidth={width}>
+	{#if backgroundUrl}
+		<img class="background" src={backgroundUrl} alt="background" />
+	{:else}
+		<img class="background" src={Background} alt="background" />
+	{/if}
 	<div class="highway-wrapper">
-		<canvas bind:this={canvas} />
+		<div class="highway">
+			<canvas bind:this={canvas} />
+			<div
+				class="image"
+				style="background-image: url({highwayUrl}); background-position-y: {highwayPos}%"
+			/>
+		</div>
 	</div>
-	<button class="play" bind:this={playButton} on:click={playPause}>
-		{#if previewer?.playing}
-			Pause
-		{:else}
-			Play
-		{/if}
-	</button>
+	<div class="top">
+		<button class="play" on:click={playPause}>
+			{#if previewer?.playing}
+				<Icon src={Pause} solid />
+			{:else}
+				<Icon src={Play} solid />
+			{/if}
+		</button>
+
+		<input type="range" bind:value={volume} min="0" max="100" class="volume" />
+		<div class="time">
+			{minutes > 10 ? minutes : '0' + minutes}:{seconds > 10 ? seconds : '0' + seconds}.{ms < 100
+				? ms < 10
+					? '00' + ms
+					: '0' + ms
+				: ms}
+		</div>
+	</div>
 	<div
 		class="seekbar"
 		bind:offsetHeight={seekbarHeight}
@@ -88,22 +138,39 @@
 		{/each} -->
 		<div class="bar" style="transform: translateY(-{percentage * 100}%)" />
 	</div>
-	<input type="range" bind:value={volume} min="0" max="100" class="volume" />
 </div>
 
 <style>
 	.play {
+		width: 2rem;
+		height: 2rem;
+		background: transparent;
+		border: 0;
+		color: #fff;
+		cursor: pointer;
+	}
+	.background {
 		position: absolute;
-		top: 15px;
-		left: 15px;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
 	}
 	.seekbar {
 		position: absolute;
-		top: 1rem;
+		top: 3rem;
 		right: 1rem;
 		bottom: 1rem;
 		background-color: #fff9;
 		width: 4rem;
+	}
+	.top {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 2rem;
+		width: 100%;
+		background-color: rgba(0, 0, 0, 0.75);
 	}
 	.seekbar .bar {
 		height: 100%;
@@ -116,7 +183,17 @@
 		left: 0;
 		height: 100vh;
 		width: 100vw;
-		background-color: #000;
+		/* background-color: #000; */
+	}
+	.time {
+		position: absolute;
+		top: 0;
+		right: 0.5rem;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		color: white;
+		font-family: 'Fira Code';
 	}
 	.percentage {
 		position: absolute;
@@ -132,23 +209,39 @@
 		width: 100%;
 		text-align: center;
 	}
+	.highway .image {
+		position: absolute;
+		top: 0;
+		left: 0;
+		transform: translateY(-0%);
+		background-repeat: repeat-y;
+		background-size: 100% 50%;
+		width: 100%;
+		height: 200%;
+		z-index: -1;
+	}
+	.highway {
+		position: relative;
+		height: 100vh;
+		overflow: hidden;
+		transform-origin: 50% 100%;
+		border-left: solid 3px white;
+		border-right: solid 3px white;
+		box-shadow: 300px 0px 10px rgba(0, 0, 0, 1);
+		transform-style: preserve-3d;
+		mask-image: linear-gradient(180deg, #0000 0%, #fff 10%);
+		-webkit-mask-image: linear-gradient(180deg, #0000 0%, #fff 10%);
+		transform: matrix3d(1, 0, 0, 0, 0, 1, 0, -0.002, 0, 0, 1, 0, 0, 0, 0, 1);
+	}
 	.highway-wrapper {
 		position: absolute;
 		width: 100%;
 		height: 100%;
 		display: flex;
 		justify-content: center;
-		/* background-color: #fff; */
 	}
 	.volume {
 		position: absolute;
 		top: 0;
-	}
-	canvas {
-		transform-origin: 50% 100%;
-		transform-style: preserve-3d;
-		mask-image: linear-gradient(180deg, #0000 0%, #fff 10%);
-		-webkit-mask-image: linear-gradient(180deg, #0000 0%, #fff 10%);
-		transform: matrix3d(1, 0, 0, 0, 0, 1, 0, -0.002, 0, 0, 1, 0, 0, 0, 0, 1);
 	}
 </style>

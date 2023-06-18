@@ -2,7 +2,7 @@ const noteTypeArray = ['#008000', '#FF0000', '#FFFF00', '#0000FF', '#FFA500', '#
 
 const sidePaddingPercent = 0.05; // Distance between walls and notes
 const notePaddingPercent = 0.02; // Distance between notes
-const speedFactorMS = 450; // How quick the notes move (note speed)
+export const speedFactorMS = 450; // How quick the notes move (note speed)
 const FPS = 60;
 
 const frameTime = Math.round(1000 / FPS);
@@ -77,12 +77,13 @@ class ChartPreviewer {
 		this.frame = this.length * percentage;
 		this.audio.currentTime = this.frame / 1000;
 		this._renderFrame(this.frame);
+
+		if (this.frameCallback) this.frameCallback(percentage);
 	}
 
 	_drawBG() {
 		this.ctx.beginPath();
-		this.ctx.fillStyle = '#222';
-		this.ctx.fillRect(0, 0, this.width, this.height);
+		this.ctx.clearRect(0, 0, this.width, this.height);
 		this.ctx.lineWidth = this.width * notePaddingPercent * 1;
 		this.ctx.moveTo(0, this.height * 0.9);
 		this.ctx.lineTo(this.width, this.height * 0.9);
@@ -95,6 +96,8 @@ class ChartPreviewer {
 		const notes = this._getNotesInRange(time, time + speedFactorMS);
 		if (!notes) return;
 		this._drawBG();
+
+
 
 		/**
 		 * BEATLINES
@@ -201,6 +204,8 @@ class ChartPreviewer {
 				}
 			}
 		}
+
+
 	}
 
 	_getNotesInRange(startMS: number, endMS: number) {

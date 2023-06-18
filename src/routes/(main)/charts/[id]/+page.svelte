@@ -29,7 +29,7 @@
 		</div>
 	</div>
 	<div class="main-content">
-		<iframe frameborder="0" src="/preview/{id}" title="Chart Preview" />
+		<iframe class="preview" frameborder="0" src="/preview/{id}" title="Chart Preview" />
 	</div>
 </div>
 
@@ -76,7 +76,8 @@
 	.main-content {
 		padding: 10px;
 	}
-	iframe {
+	iframe.preview {
+		background-color: var(--bg500);
 		width: 80%;
 		aspect-ratio: calc(16 / 9);
 	}
