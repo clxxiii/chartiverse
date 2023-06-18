@@ -17,7 +17,7 @@
 <div class="header">
 	<a class="icon" href="/">
 		<img src="/favicon-32x32.png" alt="" />
-		<div class="title">Chartiverse</div>
+		<div class="title">CLXXIII's Charts</div>
 	</a>
 	<div class="profile">
 		{#if uploadEnabled}
