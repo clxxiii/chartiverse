@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ChartPreviewer, { speedFactorMS } from '$lib/ChartPreviewerCanvas';
 	import { onMount } from 'svelte';
-	import { Icon, Pause, Play } from 'svelte-hero-icons';
+	import { Icon, Pause, Play, SpeakerWave, SpeakerXMark } from 'svelte-hero-icons';
 	import Highway from '$lib/assets/highway.png';
 	import Background from '$lib/assets/background.png';
 
@@ -46,7 +46,8 @@
 	const frameCallback = (num: number) => {
 		let frame = Math.round(num * previewer.length);
 		ms = frame % 1000;
-		seconds = Math.round(frame / 1000) % 60;
+		seconds = Math.floor(frame / 1000) % 60;
+		minutes = Math.floor(frame / 1000 / 60);
 		highwayPos = (frame / (speedFactorMS * 1.1)) * 100;
 		percentage = num;
 	};
@@ -110,9 +111,23 @@
 			{/if}
 		</button>
 
-		<input type="range" bind:value={volume} min="0" max="100" class="volume" />
+		<div class="volume-wrapper">
+			{#if volume > 0}
+				<Icon src={SpeakerWave} solid width={20} />
+			{:else}
+				<Icon src={SpeakerXMark} solid width={20} />
+			{/if}
+			<input
+				type="range"
+				style="--value: {volume}%"
+				bind:value={volume}
+				min="0"
+				max="100"
+				class="volume"
+			/>
+		</div>
 		<div class="time">
-			{minutes > 10 ? minutes : '0' + minutes}:{seconds > 10 ? seconds : '0' + seconds}.{ms < 100
+			{minutes >= 10 ? minutes : '0' + minutes}:{seconds >= 10 ? seconds : '0' + seconds}.{ms < 100
 				? ms < 10
 					? '00' + ms
 					: '0' + ms
@@ -240,8 +255,42 @@
 		display: flex;
 		justify-content: center;
 	}
+	.volume-wrapper {
+		position: absolute;
+		height: 100%;
+		display: grid;
+		grid-template-columns: 2rem 5rem;
+		place-items: center;
+		color: white;
+		align-items: center;
+		top: 0;
+		right: 6.5rem;
+	}
 	.volume {
+		-webkit-appearance: none;
+		position: relative;
+		appearance: none;
+		margin: 0;
+		border-radius: 20px;
+		overflow: hidden;
+		width: 100%;
+		height: 10px;
+		background-color: rgba(255, 255, 255, 0.5);
+	}
+	.volume::before {
+		content: '';
 		position: absolute;
 		top: 0;
+		left: 0;
+		width: var(--value);
+		background-color: #fff;
+		height: 100%;
+	}
+	.volume::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 5px;
+		height: 100%;
+		background: white;
 	}
 </style>
