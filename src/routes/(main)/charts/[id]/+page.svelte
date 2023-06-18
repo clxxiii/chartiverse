@@ -9,6 +9,13 @@
 	<title>
 		{artist} - {name} by {charter} | Chartiverse
 	</title>
+
+	<meta property="twitter:card" content="summary" />
+	<meta property="og:title" content="{artist} - {name}" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="A chart by {charter}, published to Chartiverse" />
+	<meta property="og:url" content="https://charts.clxxiii.dev/charts/{id}" />
+	<meta property="og:image" content={album_url} />
 </svelte:head>
 
 <div class="container">

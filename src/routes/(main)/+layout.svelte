@@ -19,6 +19,8 @@
 			color: var(--link-color);
 		}
 	</style>
+
+	<meta name="description" content="Chart Search, Chart Previews, Chart Discussions, Chartiverse" />
 </svelte:head>
 
 <header>

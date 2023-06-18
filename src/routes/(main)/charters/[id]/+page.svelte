@@ -40,6 +40,16 @@
 
 <svelte:head>
 	<title>{charter.username} | Chartiverse</title>
+
+	<meta property="twitter:card" content="summary" />
+	<meta property="og:title" content="{charter.username}'s Charts" />
+	<meta property="og:type" content="website" />
+	<meta
+		property="og:description"
+		content="The charter profile for{charter.username}, all on Chartiverse"
+	/>
+	<meta property="og:url" content="https://charts.clxxiii.dev/charters/{charter.id}" />
+	<meta property="og:image" content={charter.avatar_url} />
 </svelte:head>
 
 <div class="page">
