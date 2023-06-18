@@ -3,6 +3,9 @@
 	import { fade } from 'svelte/transition';
 	import DownloadButton from './DownloadButton.svelte';
 	import { Icon, Pause, Play } from 'svelte-hero-icons';
+	import ProgressCircle from './ProgressCircle.svelte';
+
+	const previewLengthSeconds = 15;
 
 	export let chart: Chart;
 	type AudioPreview = {
@@ -25,6 +28,7 @@
 	let hover = false;
 	let playing = false;
 	let audio: HTMLAudioElement;
+	let progressUpdateInterval: NodeJS.Timer;
 
 	const seconds = Math.round(song_length / 1000) % 60;
 	const minutes = Math.round(song_length / 1000 / 60);
@@ -39,6 +43,7 @@
 	const resetPreview = () => {
 		pause();
 		hover = false;
+		previewProgress = 0;
 		audio.currentTime = preview_start_time / 1000;
 	};
 	const init = () => {
@@ -49,10 +54,12 @@
 	const play = () => {
 		audio.play();
 		playing = true;
+		progressUpdateInterval = setInterval(progressUpdate, 10);
 	};
 	const pause = () => {
 		audio.pause();
 		playing = false;
+		clearInterval(progressUpdateInterval);
 	};
 	const preview = () => {
 		previewFunction({
@@ -66,6 +73,19 @@
 			playing
 		});
 	};
+
+	let previewProgress: number;
+	const progressUpdate = () => {
+		const progress = audio.currentTime * 1000 - preview_start_time;
+		const progressPercentage = progress / (previewLengthSeconds * 1000);
+		previewProgress = progressPercentage;
+
+		if (progressPercentage >= 1) {
+			pause();
+			previewProgress = 0;
+			audio.currentTime = preview_start_time / 1000;
+		}
+	};
 </script>
 
 <div class="card" bind:this={card} on:mouseenter={mouseenter} on:mouseleave={mouseleave}>
@@ -78,6 +98,9 @@
 	<div class="album" style="background-image: url({album_url})">
 		{#if hover && link}
 			<div class="preview" in:fade={{ duration: 100 }} on:click={preview} on:keydown={preview}>
+				<div class="progress">
+					<ProgressCircle width={80} progress={previewProgress} />
+				</div>
 				{#if playing}
 					<Icon src={Pause} solid width="30" />
 				{:else}
@@ -168,10 +191,16 @@
 		height: 100%;
 		display: grid;
 		place-items: center;
+		color: var(--text);
 		background-color: rgba(0, 0, 0, 0.5);
 		backdrop-filter: blur(2px);
 		z-index: 2;
 		cursor: pointer;
+	}
+	.progress {
+		position: absolute;
+		top: 0;
+		left: 0;
 	}
 	/* .length {
 		grid-row: 1/2;
