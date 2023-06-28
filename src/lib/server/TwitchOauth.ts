@@ -4,7 +4,7 @@ import { randomBytes } from 'crypto';
 import { TwitchAPI } from 'twitch-api-typescript';
 import { error } from '@sveltejs/kit';
 import { prisma } from './prisma';
-import { StatusCodes } from './StatusCodes';
+import { StatusCodes } from '../StatusCodes';
 import { upload } from './storage';
 
 const AUTH_URL = 'https://id.twitch.tv/oauth2/authorize';

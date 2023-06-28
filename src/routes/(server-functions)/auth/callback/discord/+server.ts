@@ -1,9 +1,9 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { StatusCodes } from '$lib/StatusCodes';
-import { exchangeCode } from '$lib/DiscordOauth';
+import { exchangeCode } from '$lib/server/DiscordOauth';
 
-export const GET: RequestHandler = async ({ url, cookies }) => {
+export const GET: RequestHandler = async ({ url }) => {
 	const code = url.searchParams.get('code');
 	const state = url.searchParams.get('state');
 

@@ -1,4 +1,4 @@
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { error, redirect, type ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { StatusCodes } from '$lib/StatusCodes';
@@ -52,13 +52,13 @@ export const actions: Actions = {
 	},
 	'change-theme': async ({ request, cookies }) => {
 		const data = await request.json();
-		const theme = data.id
+		const theme = data.id;
 
 		if (theme) {
-			cookies.set("colortheme", theme, {
-				path: "/",
+			cookies.set('colortheme', theme, {
+				path: '/',
 				maxAge: 60 * 60 * 24 * 31
-			})
+			});
 		}
 	}
 };

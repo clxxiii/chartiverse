@@ -1,5 +1,5 @@
 import { StatusCodes } from '$lib/StatusCodes';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { error, type ServerLoad } from '@sveltejs/kit';
 
 export const load: ServerLoad = async ({ params }) => {

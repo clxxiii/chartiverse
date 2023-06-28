@@ -1,67 +1,67 @@
 @font-face {
-  font-family: Quicksand;
-  src: url("/Quicksand-VariableFont_wght.ttf");
+	font-family: Quicksand;
+	src: url('/Quicksand-VariableFont_wght.ttf');
 }
 
 @font-face {
-  font-family: Poppins;
-  src: url("/Poppins-Regular.ttf");
+	font-family: Poppins;
+	src: url('/Poppins-Regular.ttf');
 }
 
 @font-face {
-  font-family: Fira Code;
-  src: url("/FiraCode-VF.ttf");
+	font-family: Fira Code;
+	src: url('/FiraCode-VF.ttf');
 }
 
-html[data-theme="catppuccin-mocha"],
-html[data-theme="dark"],
+html[data-theme='catppuccin-mocha'],
+html[data-theme='dark'],
 .catpuccin-mocha {
-  --bg100: var(--ctp-mocha-crust);
-  --bg200: var(--ctp-mocha-mantle);
-  --bg400: var(--ctp-mocha-base);
-  --bg500: var(--ctp-mocha-surface1);
-  --bg600: var(--ctp-mocha-surface2);
-  --bg700: var(--ctp-mocha-surface3);
+	--bg100: var(--ctp-mocha-crust);
+	--bg200: var(--ctp-mocha-mantle);
+	--bg400: var(--ctp-mocha-base);
+	--bg500: var(--ctp-mocha-surface1);
+	--bg600: var(--ctp-mocha-surface2);
+	--bg700: var(--ctp-mocha-surface3);
 
-  --text: var(--ctp-mocha-text);
-  --highlight: var(--ctp-mocha-sky);
-  --link-color: var(--ctp-mocha-lavender);
-  --error: var(--ctp-mocha-red);
-  --warning: var(--ctp-mocha-yellow);
-  --success: var(--ctp-latte-green)
+	--text: var(--ctp-mocha-text);
+	--highlight: var(--ctp-mocha-sky);
+	--link-color: var(--ctp-mocha-lavender);
+	--error: var(--ctp-mocha-red);
+	--warning: var(--ctp-mocha-yellow);
+	--success: var(--ctp-latte-green);
 }
 
-html[data-theme="catppuccin-frappe"],
-html[data-theme="light"],
+html[data-theme='catppuccin-frappe'],
+html[data-theme='light'],
 .catpuccin-frappe {
-  --bg100: var(--ctp-latte-crust);
-  --bg200: var(--ctp-latte-mantle);
-  --bg400: var(--ctp-latte-base);
-  --bg500: var(--ctp-latte-surface1);
-  --bg600: var(--ctp-latte-surface2);
-  --bg700: var(--ctp-latte-surface3);
+	--bg100: var(--ctp-latte-crust);
+	--bg200: var(--ctp-latte-mantle);
+	--bg400: var(--ctp-latte-base);
+	--bg500: var(--ctp-latte-surface1);
+	--bg600: var(--ctp-latte-surface2);
+	--bg700: var(--ctp-latte-surface3);
 
-  --text: var(--ctp-latte-text);
-  --highlight: var(--ctp-latte-teal);
-  --link-color: var(--ctp-latte-sapphire);
-  --error: var(--ctp-latte-red);
-  --warning: var(--ctp-latte-yellow);
-  --success: var(--ctp-latte-green)
+	--text: var(--ctp-latte-text);
+	--highlight: var(--ctp-latte-teal);
+	--link-color: var(--ctp-latte-sapphire);
+	--error: var(--ctp-latte-red);
+	--warning: var(--ctp-latte-yellow);
+	--success: var(--ctp-latte-green);
 }
 
-html[data-theme="amoled"],
+html[data-theme='amoled'],
 .amoled {
-  --bg100: #070707;
-  --bg200: #090909;
-  --bg400: #000;
-  --bg500: #000;
-  --bg600: #111;
-  --bg700: #333;
+	--bg100: #070707;
+	--bg200: #090909;
+	--bg400: #000;
+	--bg500: #000;
+	--bg600: #111;
+	--bg700: #333;
 
-  --text: #fff;
-  --highlight: var(--ctp-mocha-sky);
-  --link-color: var(--ctp-latte-sapphire);
-  --error: var(--ctp-latte-red);
-  --warning: var(--ctp-latte-yellow);
-  --success: var(--ctp-latte-green)
+	--text: #fff;
+	--highlight: var(--ctp-mocha-sky);
+	--link-color: var(--ctp-latte-sapphire);
+	--error: var(--ctp-latte-red);
+	--warning: var(--ctp-latte-yellow);
+	--success: var(--ctp-latte-green);
 }

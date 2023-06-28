@@ -1,8 +1,8 @@
 import { redirect, type RequestHandler } from '@sveltejs/kit';
 import { randomBytes } from 'crypto';
 import { StatusCodes } from '$lib/StatusCodes';
-import { generateUrl } from '$lib/DiscordOauth';
-import { prisma } from '$lib/prisma';
+import { generateUrl } from '$lib/server/DiscordOauth';
+import { prisma } from '$lib/server/prisma';
 
 export const GET: RequestHandler = async ({ cookies }) => {
 	const state = randomBytes(4).toString('hex');

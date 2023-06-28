@@ -1,4 +1,4 @@
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import type { ServerLoad } from '@sveltejs/kit';
 
 export const load: ServerLoad = async ({ cookies }) => {

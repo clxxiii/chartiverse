@@ -8,7 +8,7 @@
 	export let data;
 	const { chart } = data;
 
-	let chartFile: ChartFile.Chart;
+	let chartFile: ChartFile.Chart | null = null;
 	let mounted = false;
 
 	onMount(async () => {
@@ -20,7 +20,7 @@
 	});
 </script>
 
-{#if mounted}
+{#if mounted && chartFile}
 	<div class="canvas" transition:fade={{ duration: 200 }}>
 		<ChartPreviewer
 			chart={chartFile}

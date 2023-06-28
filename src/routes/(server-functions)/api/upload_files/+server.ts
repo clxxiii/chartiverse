@@ -1,20 +1,19 @@
 import { PUBLIC_CDN_ENDPOINT, PUBLIC_UPLOAD_ENABLED_USERS } from '$env/static/public';
 import { StatusCodes } from '$lib/StatusCodes';
-import { prisma } from '$lib/prisma';
-import { upload } from '$lib/storage';
+import { prisma } from '$lib/server/prisma';
+import { upload } from '$lib/server/storage';
 import type { Chart } from '@prisma/client';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
 
 const uploadUsers = JSON.parse(PUBLIC_UPLOAD_ENABLED_USERS);
 
 type FileTypes = {
-	song: string,
-	album: string,
-	background: string | undefined,
-}
+	song: string;
+	album: string;
+	background: string | undefined;
+};
 
 export const PUT: RequestHandler = async ({ request, cookies }) => {
-
 	const sessionId = cookies.get('chartiverse_session');
 	const user = await prisma.user.findFirst({
 		where: {
@@ -44,20 +43,29 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 		song: data.files.song_type,
 		album: data.files.album_type,
 		background: data.files.background_type
-	}
+	};
 	const chart = await createChartDbObject(data.chart, types, user.id);
 
 	await upload(Buffer.from(data.files.album, 'base64'), `/charts/${chart.id}/album.${types.album}`);
 	await upload(Buffer.from(data.files.song, 'base64'), `/charts/${chart.id}/song.${types.song}`);
 	await upload(Buffer.from(data.files.chart, 'base64'), `/charts/${chart.id}/notes.chart`);
 
-	if (data.files.icon) await upload(Buffer.from(data.files.icon, 'base64'), `/charts/${chart.id}/icon.png`);
-	if (data.files.background_type) await upload(Buffer.from(data.files.background, 'base64'), `/charts/${chart.id}/background.${types.background}`);
+	if (data.files.icon)
+		await upload(Buffer.from(data.files.icon, 'base64'), `/charts/${chart.id}/icon.png`);
+	if (data.files.background_type)
+		await upload(
+			Buffer.from(data.files.background, 'base64'),
+			`/charts/${chart.id}/background.${types.background}`
+		);
 
 	return json({ chart });
 };
 
-const createChartDbObject = async (chartData: { [key: string]: string }, types: FileTypes, userId: string): Promise<Chart> => {
+const createChartDbObject = async (
+	chartData: { [key: string]: string },
+	types: FileTypes,
+	userId: string
+): Promise<Chart> => {
 	const {
 		name,
 		artist,
@@ -149,10 +157,12 @@ const createChartDbObject = async (chartData: { [key: string]: string }, types: 
 			song_url: `${PUBLIC_CDN_ENDPOINT}/charts/${chart.id}/song.${types.song}`,
 			audio_type: types.song,
 			chart_url: `${PUBLIC_CDN_ENDPOINT}/charts/${chart.id}/notes.chart`,
-			background_url: types.background ? `${PUBLIC_CDN_ENDPOINT}/charts/${chart.id}/background.${types.background}` : null,
+			background_url: types.background
+				? `${PUBLIC_CDN_ENDPOINT}/charts/${chart.id}/background.${types.background}`
+				: null,
 			background_type: types.background
 		}
 	});
 
 	return chart;
-}
+};

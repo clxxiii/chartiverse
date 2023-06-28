@@ -97,8 +97,6 @@ class ChartPreviewer {
 		if (!notes) return;
 		this._drawBG();
 
-
-
 		/**
 		 * BEATLINES
 		 */
@@ -204,8 +202,6 @@ class ChartPreviewer {
 				}
 			}
 		}
-
-
 	}
 
 	_getNotesInRange(startMS: number, endMS: number) {

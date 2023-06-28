@@ -79,13 +79,12 @@ export const onupload = async (input: File) => {
 
 		if (file.includes('song.mp3')) {
 			song = await zip.file(file)?.async('base64');
-			song_type = 'mp3'
+			song_type = 'mp3';
 		}
 
 		if (file.includes('notes.chart')) {
 			chart = await zip.file(file)?.async('base64');
 		}
-
 	}
 
 	return { album, chart, song, background, icon, song_type, album_type, background_type };

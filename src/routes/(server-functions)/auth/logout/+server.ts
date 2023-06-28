@@ -1,5 +1,5 @@
 import { StatusCodes } from '$lib/StatusCodes';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { redirect, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ cookies, url }) => {
