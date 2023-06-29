@@ -15,6 +15,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/kit": "^1.5.0",
+		"@types/node": "^20.3.2",
 		"@types/yauzl": "^2.10.0",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
@@ -39,9 +40,11 @@
 		"bunnycdn-storage": "^1.0.4",
 		"discord-oauth2": "^2.11.0",
 		"filedrop-svelte": "^0.1.2",
+		"jose": "^4.14.4",
 		"jszip": "^3.10.1",
 		"prisma": "^4.15.0",
 		"twitch-api-typescript": "^0.5.5",
-		"typescript-map": "^0.1.0"
+		"typescript-map": "^0.1.0",
+		"zod": "^3.21.4"
 	}
 }

@@ -1,15 +1,48 @@
-import { redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { StatusCodes } from '$lib/StatusCodes';
-import { exchangeCode } from '$lib/server/DiscordOauth';
+import { exchangeCode, getUserInfo } from '$lib/server/DiscordOauth';
+import {
+	createSession,
+	deleteState,
+	getOauthUser,
+	getState,
+	keyExists,
+	newOauthUser
+} from '$lib/server/auth';
+import type { User } from '@prisma/client';
 
-export const GET: RequestHandler = async ({ url }) => {
-	const code = url.searchParams.get('code');
-	const state = url.searchParams.get('state');
+export const GET: RequestHandler = async ({ url, cookies }) => {
+	const code = url.searchParams.get('code'),
+		stateId = url.searchParams.get('state');
 
-	if (!code) throw redirect(StatusCodes.TEMPORARY_REDIRECT, '/');
-	if (!state) throw redirect(StatusCodes.TEMPORARY_REDIRECT, '/');
-	await exchangeCode(code, 'identify', state);
+	if (!code || !stateId) throw redirect(StatusCodes.TEMPORARY_REDIRECT, '/');
 
-	throw redirect(StatusCodes.TEMPORARY_REDIRECT, '/');
+	// Check state
+	const state = await getState(stateId);
+	if (!state) throw error(StatusCodes.UNAUTHORIZED);
+
+	const token = await exchangeCode(code, 'identify');
+
+	const discordUserData = await getUserInfo(token.access_token);
+
+	let user: User | null;
+	if (await keyExists(`discord:${discordUserData.id}`)) {
+		user = await getOauthUser('discord', token, discordUserData);
+	} else {
+		user = await newOauthUser('discord', token, discordUserData);
+	}
+
+	if (!user) throw error(StatusCodes.INTERNAL_SERVER_ERROR);
+
+	const session = await createSession(user);
+	if (!session) throw error(StatusCodes.INTERNAL_SERVER_ERROR);
+
+	cookies.set('chartiverse_session', session.id, {
+		path: '/',
+		maxAge: 60 * 60 * 24 * 365
+	});
+
+	await deleteState(stateId);
+	throw redirect(StatusCodes.TEMPORARY_REDIRECT, state.href);
 };

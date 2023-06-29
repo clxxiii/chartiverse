@@ -1,15 +1,19 @@
 <script lang="ts">
-	import type { User } from '@prisma/client';
+	import type { User as UserType } from '@prisma/client';
 	import { fly } from 'svelte/transition';
 	import { browser } from '$app/environment';
-	import { Icon, XMark } from 'svelte-hero-icons';
+	import { Icon, User, XMark } from 'svelte-hero-icons';
+	import LoginCard from './LoginCard.svelte';
 
-	export let user: User | null = null;
+	export let user: UserType | null = null;
 
 	let menuOpen = false;
 	const open = () => (menuOpen = true);
 	const close = () => (menuOpen = false);
 	const logout = () => browser && (window.location.href = '/auth/logout');
+
+	let path = new URLSearchParams();
+	if (browser) path.set('from', window.location.pathname);
 </script>
 
 {#if user}
@@ -44,18 +48,53 @@
 		<button class="click-catcher" on:click={close} />
 	{/if}
 {:else}
-	<a class="login" href="/auth/login/twitch">Login</a>
+	<a class="signup" href="/register?{path.toString()}">Sign Up</a>
+	<div class="login" on:click={open} on:keydown={open}>Login</div>
+	<div class="nouser" on:click={open} on:keydown={open}>
+		<Icon src={User} width={30} />
+	</div>
+	{#if menuOpen}
+		<div
+			transition:fly={{
+				y: -50,
+				duration: 200
+			}}
+			class="login-card"
+		>
+			<LoginCard />
+		</div>
+		<button class="click-catcher" on:click={close} />
+	{/if}
 {/if}
 
 <style>
-	.login {
-		padding: 10px;
+	.login-card {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		z-index: 11;
+	}
+	.login,
+	.signup {
+		padding: 3px 10px;
 		border-radius: 5px;
 		text-transform: uppercase;
 		background: var(--highlight);
 		font-weight: 600;
 		text-decoration: none;
 		color: var(--bg400);
+		cursor: pointer;
+	}
+	.signup {
+		margin-right: 10px;
+		background: var(--bg400);
+		color: var(--highlight);
+	}
+	.nouser {
+		display: grid;
+		place-items: center;
+		margin-left: 10px;
+		cursor: pointer;
 	}
 	.profile-button {
 		display: flex;
@@ -83,6 +122,8 @@
 
 	.click-catcher {
 		position: fixed;
+		top: 0;
+		left: 0;
 		width: 100vw;
 		height: 100vh;
 		inset: 0;

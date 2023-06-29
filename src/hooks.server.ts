@@ -1,3 +1,4 @@
+import { prisma } from '$lib/server/prisma';
 import type { Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
@@ -8,6 +9,19 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (cookieTheme) {
 		theme = cookieTheme;
 	}
+
+	const sessionId = event.cookies.get('chartiverse_session');
+
+	if (sessionId)
+		event.locals.user = await prisma.user.findFirst({
+			where: {
+				sessions: {
+					some: {
+						id: sessionId
+					}
+				}
+			}
+		});
 
 	if (theme) {
 		return await resolve(event, {

@@ -10,6 +10,64 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ************************
+//    USER AUTHENTICATION
+// ************************
+
+model Session {
+  id String @id @default(uuid())
+
+  token String? @unique // A jwt, stored in the browser's cookies to identify a user.
+
+  user      User?    @relation(fields: [user_id], references: [id])
+  user_id   String?
+  last_used DateTime @default(now())
+}
+
+model Key {
+  id String @id @unique @default(uuid())
+
+  hashed_password String?
+  token           OauthToken?
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+}
+
+model User {
+  id              String  @id @default(uuid())
+  email           String?
+  username        String?
+  avatar_url      String?
+  colortheme      String?
+  highlight_color String?
+  salt            String? @default(uuid())
+
+  charts Chart[]
+  posts  Post[]
+
+  sessions Session[]
+  keys     Key[]
+
+  @@unique([id, username])
+}
+
+model OauthToken {
+  access_token  String
+  token_type    String
+  expires_at    DateTime @default(now())
+  refresh_token String
+  scope         String
+
+  key    Key    @relation(fields: [key_id], references: [id])
+  key_id String @id @unique
+}
+
+model LoginProcess {
+  id   String @id @unique // Used as the state in Oauth procedures
+  href String // The page which the user starts the login request
+}
+
 model Chart {
   id String @id @default(uuid())
 
@@ -72,62 +130,15 @@ model Chart {
   user     User?   @relation(fields: [user_id, username], references: [id, username])
   username String?
   user_id  String?
-}
 
-model Session {
-  id String @id @default(uuid())
-
-  user      User?    @relation(fields: [user_id], references: [id])
-  user_id   String?
-  last_used DateTime @default(now())
-  state     String?  @unique // This property is used for Oauth. Once logged in, it is not used again.
-}
-
-model User {
-  id              String  @id @default(uuid())
-  username        String?
-  avatar_url      String?
-  colortheme      String?
-  highlight_color String?
-
-  charts Chart[]
-  posts  Post[]
-
-  discord_oauth DiscordOauth?
-  discord_id    String?       @unique
-
-  twitch_oauth TwitchOauth?
-  twitch_id    String?      @unique
-
-  sessions Session[]
-
-  @@unique([id, username])
-}
-
-model DiscordOauth {
-  access_token  String
-  token_type    String
-  expires_at    DateTime @default(now())
-  refresh_token String
-  scope         String
-
-  user    User   @relation(fields: [user_id], references: [id])
-  user_id String @id
-}
-
-model TwitchOauth {
-  access_token  String
-  token_type    String
-  expires_at    DateTime @default(now())
-  refresh_token String
-  scope         String
-
-  user    User   @relation(fields: [user_id], references: [id])
-  user_id String @id
+  posts Post[]
 }
 
 model Post {
   id String @id @default(uuid())
+
+  chart    Chart?  @relation(fields: [chart_id], references: [id])
+  chart_id String?
 
   author          User     @relation(fields: [user_id], references: [id])
   user_id         String

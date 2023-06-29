@@ -4,15 +4,16 @@ import { StatusCodes } from '$lib/StatusCodes';
 import { generateUrl } from '$lib/server/DiscordOauth';
 import { prisma } from '$lib/server/prisma';
 
-export const GET: RequestHandler = async ({ cookies }) => {
-	const state = randomBytes(4).toString('hex');
+export const GET: RequestHandler = async ({ url }) => {
+	const id = randomBytes(4).toString('hex');
+	const href = url.searchParams.get('from') ?? '/';
 
-	const session = await prisma.session.create({
+	await prisma.loginProcess.create({
 		data: {
-			state
+			id,
+			href
 		}
 	});
-	cookies.set('chartiverse_session', session.id, { path: '/' });
 
-	throw redirect(StatusCodes.TEMPORARY_REDIRECT, generateUrl('identify', state));
+	throw redirect(StatusCodes.TEMPORARY_REDIRECT, generateUrl('identify', id));
 };

@@ -32,9 +32,6 @@
 		}
 	};
 
-	let playing: boolean;
-	$: playing = previewer?.playing;
-
 	let percentage: number;
 	let seekClicked = false;
 	let seekbarHeight = 0;

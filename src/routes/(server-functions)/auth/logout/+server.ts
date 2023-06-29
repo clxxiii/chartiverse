@@ -10,6 +10,6 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 			id: sessionId
 		}
 	});
-	cookies.delete('chartiverse_session');
+	cookies.delete('chartiverse_session', { path: '/' });
 	throw redirect(StatusCodes.TEMPORARY_REDIRECT, redirectUrl);
 };

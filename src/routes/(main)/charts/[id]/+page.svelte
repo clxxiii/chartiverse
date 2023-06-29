@@ -2,7 +2,7 @@
 	import DownloadButton from '$lib/components/DownloadButton.svelte';
 
 	export let data;
-	const { id, name, artist, charter, user_id, album_url, song_url, chart_url } = data.chart;
+	const { id, name, artist, charter, user_id, album_url } = data.chart;
 </script>
 
 <svelte:head>

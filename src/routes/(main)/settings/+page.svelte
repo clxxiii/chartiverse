@@ -18,8 +18,6 @@
 
 	const keydown = () => {
 		clearTimeout(timeout);
-		if (!typing) {
-		}
 		typing = true;
 		timeout = setTimeout(typingEnd, msAfterInput);
 	};

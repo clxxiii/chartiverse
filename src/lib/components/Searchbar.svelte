@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 
-	let value: String;
+	let value: string;
 
 	let timeout: NodeJS.Timeout;
 	let msAfterInput = 1000;
