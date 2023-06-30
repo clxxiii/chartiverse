@@ -8,6 +8,18 @@
 	<title>
 		{$page.error?.message}
 	</title>
+	<style>
+		body {
+			font-family: Poppins;
+			margin: 0;
+			background-color: var(--bg400);
+			color: var(--text);
+		}
+
+		a {
+			color: var(--link-color);
+		}
+	</style>
 </svelte:head>
 
 <h1>{$page.status}</h1>
