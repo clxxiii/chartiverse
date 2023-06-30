@@ -1,15 +1,19 @@
 <script lang="ts">
 	import type { User as UserType } from '@prisma/client';
-	import { fly } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import { browser } from '$app/environment';
 	import { Icon, User, XMark } from 'svelte-hero-icons';
 	import LoginCard from './LoginCard.svelte';
+	import RegisterCard from './RegisterCard.svelte';
 
 	export let user: UserType | null = null;
 
 	let menuOpen = false;
+	let register = false;
 	const open = () => (menuOpen = true);
 	const close = () => (menuOpen = false);
+	const registerOpen = () => (register = true);
+	const registerClose = () => (register = false);
 	const logout = () => browser && (window.location.href = '/auth/logout');
 
 	let path = new URLSearchParams();
@@ -48,11 +52,16 @@
 		<button class="click-catcher" on:click={close} />
 	{/if}
 {:else}
-	<a class="signup" href="/register?{path.toString()}">Sign Up</a>
+	<div class="signup" on:click={registerOpen} on:keydown={registerClose}>Sign Up</div>
+	{#if register}
+		<div transition:fade={{ duration: 100 }} class="register">
+			<div on:keydown={registerClose} on:click={registerClose} class="click-catcher dark" />
+			<div transition:fly={{ duration: 300, y: 50, delay: 200 }} class="register-card">
+				<RegisterCard />
+			</div>
+		</div>
+	{/if}
 	<div class="login" on:click={open} on:keydown={open}>Login</div>
-	<div class="nouser" on:click={open} on:keydown={open}>
-		<Icon src={User} width={30} />
-	</div>
 	{#if menuOpen}
 		<div
 			transition:fly={{
@@ -65,6 +74,9 @@
 		</div>
 		<button class="click-catcher" on:click={close} />
 	{/if}
+	<div class="nouser" on:click={open} on:keydown={open}>
+		<Icon src={User} width={30} />
+	</div>
 {/if}
 
 <style>
@@ -108,6 +120,19 @@
 		border-radius: 5px;
 		transition: background-color 200ms ease;
 	}
+	.register {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.register-card {
+		z-index: 12;
+	}
 	.profile-button:hover {
 		background-color: var(--bg500);
 	}
@@ -131,6 +156,10 @@
 		border: 0;
 		outline: none;
 		z-index: 10;
+	}
+	.click-catcher.dark {
+		background-color: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(5px);
 	}
 	.menu {
 		position: absolute;

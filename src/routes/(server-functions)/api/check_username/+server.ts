@@ -15,6 +15,6 @@ export const GET: RequestHandler = async ({ url }) => {
 	});
 	return json({
 		username,
-		taken: user == null
+		taken: user != null
 	});
 };

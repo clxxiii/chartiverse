@@ -37,5 +37,6 @@ export const actions: Actions = {
 			path: '/',
 			maxAge: 60 * 60 * 24 * 365
 		});
+		throw redirect(StatusCodes.MOVED_TEMPORARILY, "/")
 	}
 };

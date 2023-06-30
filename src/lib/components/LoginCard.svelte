@@ -3,17 +3,46 @@
 	import OauthButton from './OauthButton.svelte';
 
 	let href = new URLSearchParams();
+
 	if (browser) href.set('from', window.location.pathname);
+
+	let border = 'var(--text)';
+	let user: string, password: string;
+	let loggingIn = false;
+	const login = async () => {
+		loggingIn = true;
+		border = 'var(--text)';
+		const data = new FormData();
+		data.set('username', user);
+		data.set('password', password);
+		const loginReq = await fetch(`/login`, {
+			method: 'POST',
+			body: data
+		});
+		if (loginReq.ok) {
+			loggingIn = false;
+			browser && window.location.reload();
+		} else {
+			loggingIn = false;
+			border = 'var(--error)';
+		}
+	};
 </script>
 
 <div class="login">
 	<h2>Login</h2>
 	<div class="bg" />
 	<div class="top">
-		<div class="form">
-			<input type="text" placeholder="Username" name="username" id="username" />
-			<input type="password" placeholder="Password" name="password" id="password" />
-			<input type="submit" value="Login" />
+		<div class="form" style="--border: {border}">
+			<input type="text" bind:value={user} placeholder="Username" name="username" id="username" />
+			<input
+				type="password"
+				bind:value={password}
+				placeholder="Password"
+				name="password"
+				id="password"
+			/>
+			<input disabled={loggingIn} on:click={login} type="submit" value="Login" />
 		</div>
 		<div class="line" />
 		<div class="oauth-options">
@@ -97,7 +126,8 @@
 		display: block;
 		outline: none;
 		font-family: 'Quicksand';
-		border: solid 2px var(--text);
+		border: solid 2px var(--border);
+		transition: border-color 200ms ease;
 		border-radius: 6px;
 		margin-top: 5px;
 		padding: 5px;
@@ -119,12 +149,14 @@
 		width: 100px;
 		padding: 0px 10px;
 		margin-top: 10px;
+		transition: 200ms ease;
 		font-family: 'Poppins', sans-serif;
 		font-weight: 600;
 		border-radius: 6px;
 		font-size: 16px;
 	}
 	input[type='submit']:disabled {
+		cursor: default;
 		opacity: 0.75;
 		background-color: var(--bg400);
 		color: var(--bg500);
