@@ -1,4 +1,4 @@
-import { createHmac } from 'node:crypto';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { prisma } from './prisma';
 import type { Session, User } from '@prisma/client';
 import type { TwitchToken } from './TwitchOauth';
@@ -8,6 +8,11 @@ import { upload } from './storage';
 import type DiscordOauth2 from 'discord-oauth2';
 import { PUBLIC_CDN_ENDPOINT } from '$env/static/public';
 import { getAvatarUrl } from './DiscordOauth';
+import * as jose from 'jose';
+import { JWT_SECRET } from '$env/static/private';
+
+const jwt_secret = new TextEncoder().encode(JWT_SECRET);
+const jwt_alg = 'HS256'
 
 const hash = (s: string, salt: string): Promise<string> =>
 	new Promise((resolve) => {
@@ -32,13 +37,16 @@ export const newUser = async (e: string, u: string, p: string) => {
 		}
 	});
 
+	const salt = randomBytes(128).toString('hex')
+
 	// there shouldn't be any way that a user has no salt, but a default one has been provided just in case
-	const hashed_password = await hash(p, user.salt ?? 'dSkDks0mdK91nd3');
+	const hashed_password = await hash(p, salt ?? 'dSkDks0mdK91nd3');
 
 	await prisma.key.create({
 		data: {
 			hashed_password,
 			id: `username:${u}`,
+			salt,
 			user: {
 				connect: {
 					id: user.id
@@ -78,6 +86,7 @@ export const newOauthUser = async (
 	await prisma.key.create({
 		data: {
 			id: `${provider}:${oauthUser.id}`,
+			pretty_name: username,
 			token: {
 				create: {
 					access_token: token.access_token,
@@ -106,17 +115,18 @@ export const getUser = async (u: string, p: string): Promise<User | null> => {
 	});
 	if (!user) return await fail();
 
-	// there shouldn't be any way that a user has no salt, but a default one has been provided just in case
-	const hashed_password = await hash(p, user.salt ?? 'dSkDks0mdK91nd3');
-
 	const key = await prisma.key.findFirst({
 		where: {
 			id: `username:${u}`,
-			hashed_password
 		}
 	});
 
-	if (key) return user;
+	if (!key) return await fail()
+
+	// there shouldn't be any way that a user has no salt, but a default one has been provided just in case
+	const hashed_password = await hash(p, key.salt ?? 'dSkDks0mdK91nd3');
+	if (timingSafeEqual(Buffer.from(hashed_password), Buffer.from(key.hashed_password))) return user;
+
 
 	return await fail();
 };
@@ -160,6 +170,53 @@ export const getOauthUser = async (
 	return user;
 };
 
+export const linkOauthUser = async (
+	userId: string,
+	provider: string,
+	token: TwitchToken | DiscordOauth2.TokenRequestResult,
+	oauthUser: TwitchUser | DiscordOauth2.User
+): Promise<User | null> => {
+
+	let username;
+
+	if (isTwitch(oauthUser)) {
+		username = oauthUser.displayName;
+	} else {
+		username = oauthUser.username;
+	}
+
+	const user = await prisma.user.findUnique({
+		where: {
+			id: userId
+		}
+	})
+
+	if (!user) return null
+
+	await prisma.key.create({
+		data: {
+			id: `${provider}:${oauthUser.id}`,
+			pretty_name: username,
+			token: {
+				create: {
+					access_token: token.access_token,
+					refresh_token: token.refresh_token,
+					token_type: token.token_type,
+					scope: token.scope,
+					expires_at: new Date(Date.now() + token.expires_in * 1000)
+				}
+			},
+			user: {
+				connect: {
+					id: user.id
+				}
+			}
+		}
+	});
+
+	return user;
+}
+
 export const createSession = async (user: User): Promise<Session | null> => {
 	const u = await prisma.user.findUnique({
 		where: {
@@ -168,7 +225,7 @@ export const createSession = async (user: User): Promise<Session | null> => {
 	});
 	if (!u) return null;
 
-	return await prisma.session.create({
+	const session = await prisma.session.create({
 		data: {
 			user: {
 				connect: {
@@ -177,6 +234,26 @@ export const createSession = async (user: User): Promise<Session | null> => {
 			}
 		}
 	});
+
+	const token = await new jose.SignJWT({
+		user_id: user.id,
+		session_id: session.id
+	})
+		.setIssuedAt()
+		.setProtectedHeader({ alg: jwt_alg })
+		.sign(jwt_secret)
+
+	session.token = token;
+
+	await prisma.session.update({
+		where: {
+			id: session.id
+		},
+		data: {
+			token
+		}
+	})
+	return session
 };
 
 export const getState = async (state: string) =>

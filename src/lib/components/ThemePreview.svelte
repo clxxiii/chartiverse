@@ -10,11 +10,11 @@
 	}
 
 	const setTheme = async () => {
+		const body = new FormData();
+		body.set('id', id);
 		await fetch(`/settings?/change-theme`, {
 			method: 'POST',
-			body: JSON.stringify({
-				id
-			})
+			body
 		});
 
 		if (browser) document.documentElement.setAttribute('data-theme', id);

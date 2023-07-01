@@ -31,8 +31,8 @@ export const actions: Actions = {
 		}
 
 		const session = await createSession(user);
-		if (!session) throw error(StatusCodes.INTERNAL_SERVER_ERROR);
-		cookies.set('chartiverse_session', session.id, {
+		if (!session || !session.token) throw error(StatusCodes.INTERNAL_SERVER_ERROR);
+		cookies.set('chartiverse_session', session.token, {
 			path: '/',
 			maxAge: 60 * 60 * 24 * 365
 		});

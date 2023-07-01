@@ -1,44 +1,17 @@
 <script lang="ts">
 	import ThemePreview from '$lib/components/ThemePreview.svelte';
 	import { DevicePhoneMobile, Icon, PaintBrush, User } from 'svelte-hero-icons';
+	import Account from './Account.svelte';
+	import Appearance from './Appearance.svelte';
 
 	export let data;
 
-	type Payload = {
-		username?: string;
-	};
-
 	let settingsPage = 'User';
 
-	let msAfterInput = 1500;
-	let timeout: NodeJS.Timer;
-	let typing = false;
-
-	let username = data?.user?.username ?? '';
-
-	const keydown = () => {
-		clearTimeout(timeout);
-		typing = true;
-		timeout = setTimeout(typingEnd, msAfterInput);
-	};
-
-	const typingEnd = async () => {
-		if (!data.user) return;
-
-		typing = false;
-		const payload: Payload = {};
-
-		if (data?.user?.username != username) {
-			payload['username'] = username;
-			data.user.username = username;
-		}
-		await save(payload);
-	};
-
-	const save = async (payload: { [key: string]: string }) => {
+	const save = async (payload: FormData) => {
 		await fetch('?/save', {
 			method: 'POST',
-			body: JSON.stringify(payload)
+			body: payload
 		});
 	};
 </script>
@@ -73,26 +46,10 @@
 		</button>
 	</div>
 	<div class="content">
-		{#if settingsPage == 'User'}
-			<h1>User Settings</h1>
-			<label for="display-name">Display Name</label>
-			<input on:keydown={keydown} bind:value={username} name="display-name" type="text" />
+		{#if settingsPage == 'User' && data.user}
+			<Account user={data.user} {save} keys={data.keys} />
 		{:else if settingsPage == 'Appearance'}
-			<h1>Appearance Settings</h1>
-			<div class="themes">
-				<h2>Side-wide Theme</h2>
-				<div class="flex">
-					<div class="catpuccin-mocha">
-						<ThemePreview name="Catpuccin Mocha" id="catppuccin-mocha" />
-					</div>
-					<div class="catpuccin-frappe">
-						<ThemePreview name="Catpuccin Frappe" id="catppuccin-frappe" />
-					</div>
-					<div class="amoled">
-						<ThemePreview name="Amoled" id="amoled" />
-					</div>
-				</div>
-			</div>
+			<Appearance />
 		{:else if settingsPage == 'Devices'}
 			<h1>Device Settings</h1>
 		{/if}
@@ -106,12 +63,6 @@
 		margin: auto;
 		display: grid;
 		grid-template-columns: 250px calc(100% - 250px);
-	}
-	.flex {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 20px;
-		justify-content: center;
 	}
 	.sidebar button {
 		display: grid;
@@ -141,20 +92,6 @@
 	.sidebar button .icon {
 		width: 30px;
 		height: 30px;
-	}
-	input[type='text'] {
-		color: var(--text);
-		outline: none;
-		font-family: 'Quicksand';
-		border: solid 2px var(--text);
-		border-radius: 6px;
-		padding: 5px;
-		font-size: 16px;
-		font-weight: 600;
-		background-color: var(--bg400);
-	}
-	input[type='text']:focus {
-		border: solid 2px var(--highlight);
 	}
 	h1 {
 		margin: 0;

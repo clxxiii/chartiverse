@@ -11,14 +11,26 @@
 	}
 </script>
 
-<a {href} style="--color: {color}; --width: {width}px; --height: {height}px">
-	<img src={url} alt="" />
-	<span class="text">
-		<slot />
-	</span>
-</a>
+<div class="button" style="--color: {color}; --width: {width}px; --height: {height}px">
+	<a {href} data-sveltekit-preload-data="off">
+		<img src={url} alt="" />
+		<span class="text">
+			<slot />
+		</span>
+	</a>
+</div>
 
 <style>
+	.button {
+		width: var(--width);
+		height: var(--height);
+		padding: 5px;
+		margin: 5px;
+		border-radius: 6px;
+		border: solid 2px rgba(0, 0, 0, 0);
+		background-color: var(--color);
+		transition: 150ms ease;
+	}
 	a {
 		display: block;
 		position: relative;
@@ -26,22 +38,16 @@
 		width: var(--width);
 		gap: 10px;
 		text-decoration: none;
-		padding: 5px;
-		margin: 5px;
 		color: white;
-		transition: 150ms ease;
-		border-radius: 6px;
-		border: solid 2px rgba(0, 0, 0, 0);
-		background-color: var(--color);
 	}
 	img {
 		position: absolute;
-		top: 5px;
-		left: 5px;
+		top: 0px;
+		left: 0px;
 		width: var(--height);
 		height: var(--height);
 	}
-	a:hover {
+	.button:hover {
 		border: solid 2px var(--color);
 		filter: drop-shadow(0 0 3px var(--color));
 		background-color: rgba(0, 0, 0, 0);

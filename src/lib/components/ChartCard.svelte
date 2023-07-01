@@ -23,7 +23,8 @@
 	export let link = false;
 	export let previewFunction: (arg0: AudioPreview) => void;
 
-	const { id, name, artist, charter, album_url, song_url, preview_start_time, song_length } = chart;
+	const { id, name, artist, username, album_url, song_url, preview_start_time, song_length } =
+		chart;
 
 	let hover = false;
 	let playing = false;
@@ -126,7 +127,7 @@
 	<div class="title">{name}</div>
 	<div class="artist">{artist}</div>
 	<div class="charter">
-		Charted by {charter}
+		Charted by {username}
 	</div>
 </div>
 

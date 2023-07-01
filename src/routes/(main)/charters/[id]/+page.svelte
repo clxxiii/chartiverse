@@ -96,6 +96,7 @@
 	.profile .pic {
 		width: 75px;
 		height: 75px;
+		border-radius: 15px;
 	}
 	.charts {
 		display: flex;

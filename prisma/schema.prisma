@@ -19,7 +19,7 @@ model Session {
 
   token String? @unique // A jwt, stored in the browser's cookies to identify a user.
 
-  user      User?    @relation(fields: [user_id], references: [id])
+  user      User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id   String?
   last_used DateTime @default(now())
 }
@@ -29,6 +29,9 @@ model Key {
 
   hashed_password String?
   token           OauthToken?
+  salt            String?     @default(uuid())
+
+  pretty_name String?
 
   user    User   @relation(fields: [user_id], references: [id])
   user_id String
@@ -41,13 +44,17 @@ model User {
   avatar_url      String?
   colortheme      String?
   highlight_color String?
-  salt            String? @default(uuid())
 
   charts Chart[]
   posts  Post[]
 
   sessions Session[]
   keys     Key[]
+
+  transfer_code       String?
+  has_picked_username Boolean @default(false)
+
+  links_in_process LoginProcess[]
 
   @@unique([id, username])
 }
@@ -59,13 +66,16 @@ model OauthToken {
   refresh_token String
   scope         String
 
-  key    Key    @relation(fields: [key_id], references: [id])
+  key    Key    @relation(fields: [key_id], references: [id], onDelete: Cascade)
   key_id String @id @unique
 }
 
 model LoginProcess {
   id   String @id @unique // Used as the state in Oauth procedures
   href String // The page which the user starts the login request
+
+  linked_to    User?   @relation(fields: [linked_to_id], references: [id])
+  linked_to_id String?
 }
 
 model Chart {
@@ -137,14 +147,15 @@ model Chart {
 model Post {
   id String @id @default(uuid())
 
+  content String
+
   chart    Chart?  @relation(fields: [chart_id], references: [id])
   chart_id String?
 
-  author          User     @relation(fields: [user_id], references: [id])
-  user_id         String
-  date_posted     DateTime
-  time_code_start Int
-  time_code_end   Int
+  author      User     @relation(fields: [user_id], references: [id])
+  user_id     String
+  date_posted DateTime
+  time_code   Int?
 
   replies PostReplies? @relation(name: "parent")
 
@@ -153,7 +164,7 @@ model Post {
 }
 
 model PostReplies {
-  parent    Post   @relation(name: "parent", fields: [parent_id], references: [id])
+  parent    Post   @relation(name: "parent", fields: [parent_id], references: [id], onDelete: Cascade)
   parent_id String @id @unique
 
   replies Post[]

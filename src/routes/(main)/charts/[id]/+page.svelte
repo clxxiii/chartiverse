@@ -1,5 +1,7 @@
 <script lang="ts">
+	import CreatePost from '$lib/components/CreatePost.svelte';
 	import DownloadButton from '$lib/components/DownloadButton.svelte';
+	import Post from '$lib/components/Post.svelte';
 
 	export let data;
 	const { id, name, artist, charter, user_id, album_url } = data.chart;
@@ -38,14 +40,25 @@
 	<div class="main-content">
 		<iframe class="preview" frameborder="0" src="/preview/{id}" title="Chart Preview" />
 	</div>
+	<div class="posts">
+		<h2>Posts</h2>
+		{#if data.user}
+			<CreatePost />
+		{/if}
+		<div class="post-list">
+			{#each data.posts as post}
+				<Post {post} chart={data.chart} />
+			{/each}
+		</div>
+	</div>
 </div>
 
 <style>
 	.container {
 		position: relative;
+		height: 100%;
 		max-width: 1000px;
 		width: 98%;
-		height: fit-content;
 		margin: auto;
 		margin-top: 3rem;
 		background-color: var(--bg600);
@@ -57,6 +70,12 @@
 		height: 200px;
 		display: flex;
 		gap: 5px;
+	}
+	.post-list {
+		display: flex;
+		margin-top: 20px;
+		flex-direction: column;
+		gap: 10px;
 	}
 	img.album {
 		width: 200px;
@@ -92,6 +111,13 @@
 		position: absolute;
 		bottom: 10px;
 		right: 10px;
+	}
+	.posts {
+		background-color: var(--bg500);
+		padding: 20px;
+	}
+	.posts h2 {
+		margin: 0;
 	}
 
 	@media screen and (max-width: 600px) {

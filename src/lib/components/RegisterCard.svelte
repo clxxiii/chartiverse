@@ -110,7 +110,7 @@
 			<OauthButton simpleicon="twitch" color="#a970ff" href="/auth/login/twitch">
 				Sign up with Twitch
 			</OauthButton>
-			<OauthButton simpleicon="discord" color="#5865F2" href="/auth/login/twitch">
+			<OauthButton simpleicon="discord" color="#5865F2" href="/auth/login/discord">
 				Sign up with Discord
 			</OauthButton>
 		</div>

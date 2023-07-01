@@ -7,11 +7,13 @@ import { prisma } from '$lib/server/prisma';
 export const GET: RequestHandler = async ({ url }) => {
 	const id = randomBytes(4).toString('hex');
 	const href = url.searchParams.get('from') ?? '/';
+	const user = url.searchParams.get('user') ?? undefined;
 
 	await prisma.loginProcess.create({
 		data: {
 			id,
-			href
+			href,
+			linked_to_id: user
 		}
 	});
 

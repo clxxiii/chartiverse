@@ -7,7 +7,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 	const sessionId = cookies.get('chartiverse_session');
 	await prisma.session.delete({
 		where: {
-			id: sessionId
+			token: sessionId
 		}
 	});
 	cookies.delete('chartiverse_session', { path: '/' });

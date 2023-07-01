@@ -45,7 +45,6 @@ export const exchangeCode = async (code: string): Promise<TwitchToken | TwitchTo
 		...tokenObj,
 		scope: tokenObj.scope.join(' ')
 	};
-	console.log(token);
 
 	return token;
 };
