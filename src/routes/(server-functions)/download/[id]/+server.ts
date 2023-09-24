@@ -57,9 +57,22 @@ export const GET: RequestHandler = async ({ params }) => {
 
 	const file = await zip.generateAsync({ type: 'uint8array' });
 
+	// Remove problematic characters
+	const filename = `${chartMetadata.artist} - ${chartMetadata.name}.zip`
+		.replaceAll('\\', '')
+		.replaceAll('/', '')
+		.replaceAll(':', '')
+		.replaceAll('*', '')
+		.replaceAll('?', '')
+		.replaceAll('"', '')
+		.replaceAll('>', '')
+		.replaceAll('<', '')
+		.replaceAll('|', '')
+		.replaceAll(',', '');
+
 	return new Response(file, {
 		headers: {
-			'Content-Disposition': `attachment; filename=${chartMetadata.artist} - ${chartMetadata.name}.zip`
+			'Content-Disposition': `attachment; filename=${filename}`
 		}
 	});
 };
