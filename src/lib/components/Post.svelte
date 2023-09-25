@@ -10,7 +10,7 @@
 	let replyBoxOpen = false;
 	const showReplyBox = () => (replyBoxOpen = !replyBoxOpen);
 
-	type PostWithReplies = Post & { replies: { replies: Post } };
+	type PostWithReplies = Post & { replies: { replies: Post[] } };
 	const dateString = moment(post?.date_posted).fromNow();
 </script>
 
