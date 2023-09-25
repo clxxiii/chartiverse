@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let time: number = 0;
+	export let reply_to: string | null = null;
 
 	const ms = Math.round(time % 1000);
 	const seconds = Math.round(time / 1000) % 60;
@@ -18,14 +19,15 @@
 <div class="create">
 	<form action="?/post" method="POST">
 		<input type="hidden" name="time_code" value={time} />
+		<input type="hidden" name="reply_to" value={reply_to} />
 		<div class="input">
 			<textarea placeholder="Share your thoughts" on:keydown={oninput} name="text" id="text" />
 		</div>
 		<div class="bottom">
-			<div class="time">
+			<!-- <div class="time">
 				<input class="material-symbols-outlined" type="checkbox" name="include_time" id="" />
 				<label for="include_time">Post comment with time code: {timeString}</label>
-			</div>
+			</div> -->
 			<input type="submit" value="Post" />
 		</div>
 	</form>
@@ -59,6 +61,7 @@
 		border-color: var(--highlight);
 	}
 	input[type='submit'] {
+		cursor: pointer;
 		appearance: none;
 		border: none;
 		background-color: var(--highlight);
@@ -70,7 +73,7 @@
 		border-radius: 6px;
 		font-size: 24px;
 	}
-	input[type='checkbox'] {
+	/* input[type='checkbox'] {
 		position: relative;
 		appearance: none;
 		width: 36px;
@@ -114,7 +117,7 @@
 	}
 	.time label {
 		font-size: 18px;
-	}
+	} */
 	.bottom {
 		display: flex;
 		align-items: center;

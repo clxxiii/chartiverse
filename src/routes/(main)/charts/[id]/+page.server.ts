@@ -25,10 +25,12 @@ export const actions: Actions = {
 		const data = await request.formData()
 		const content = data.get('text'),
 			timeString = data.get('time_code'),
-			timeEnabled = data.get('include_time') == 'on'
+			timeEnabled = data.get('include_time') == 'on',
+			reply_to = data.get("reply_to")
 
 		if (!content || typeof content != 'string') throw error(StatusCodes.BAD_REQUEST, "No Post Content")
 		if (timeEnabled && (!timeString || typeof timeString != 'string')) throw error(StatusCodes.BAD_REQUEST, "Time code enabled but no time provided")
+		if (reply_to != null && typeof reply_to != 'string') throw error(StatusCodes.BAD_REQUEST, "If you specify a parent, it must be a string")
 
 		const user = locals.user;
 		if (!user) throw error(StatusCodes.UNAUTHORIZED)
@@ -49,6 +51,33 @@ export const actions: Actions = {
 				"date_posted": new Date(),
 			}
 		})
+
+		if (reply_to) {
+			await prisma.postReplies.upsert({
+				where: {
+					"parent_id": reply_to
+				},
+				create: {
+					"parent": {
+						"connect": {
+							"id": reply_to
+						}
+					},
+					"replies": {
+						"connect": {
+							"id": post.id
+						}
+					}
+				},
+				"update": {
+					"replies": {
+						"connect": {
+							"id": post.id
+						}
+					}
+				}
+			})
+		}
 
 		return post;
 	}
