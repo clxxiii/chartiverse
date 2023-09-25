@@ -19,7 +19,7 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 		where: {
 			sessions: {
 				some: {
-					id: sessionId
+					"token": sessionId
 				}
 			}
 		},
@@ -33,6 +33,7 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 		}
 	});
 
+	console.log(sessionId, user)
 	if (!user) throw error(StatusCodes.UNAUTHORIZED);
 	if (uploadUsers.length > 0 && user && !uploadUsers.includes(user.id))
 		throw error(StatusCodes.UNAUTHORIZED);
