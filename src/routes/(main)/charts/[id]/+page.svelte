@@ -2,9 +2,12 @@
 	import CreatePost from '$lib/components/CreatePost.svelte';
 	import DownloadButton from '$lib/components/DownloadButton.svelte';
 	import Post from '$lib/components/Post.svelte';
+	import type { PageData } from './$types';
 
-	export let data;
+	export let data: PageData;
 	const { id, name, artist, charter, user_id, album_url } = data.chart;
+
+	const chartOwner = data.user?.id == data.chart.user_id;
 </script>
 
 <svelte:head>
@@ -47,7 +50,8 @@
 		{/if}
 		<div class="post-list">
 			{#each data.posts as post}
-				<Post {post} chart={data.chart} />
+				<!-- I'm not willing to go through the type gymnastics that are required to get this error to go away. -->
+				<Post repliable={data.user != null} deletable={chartOwner} {post} chart={data.chart} />
 			{/each}
 		</div>
 	</div>

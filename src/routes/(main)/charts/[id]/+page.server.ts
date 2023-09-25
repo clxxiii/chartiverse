@@ -21,6 +21,30 @@ export const load: ServerLoad = async ({ params }) => {
 
 
 export const actions: Actions = {
+	delete_post: async ({ request, locals }) => {
+
+
+
+		const data = await request.formData();
+		const id = data.get('post_id')
+
+		if (!id || typeof id != "string") throw error(StatusCodes.BAD_REQUEST)
+
+		const post = await prisma.post.findUnique({
+			where: { id },
+			include: {
+				"chart": true
+			}
+		})
+
+		const user = locals.user;
+
+		if (post?.chart?.user_id != user?.id) throw error(StatusCodes.UNAUTHORIZED);
+
+		await prisma.post.delete({
+			where: { id }
+		})
+	},
 	post: async ({ request, locals, params }) => {
 		const data = await request.formData()
 		const content = data.get('text'),

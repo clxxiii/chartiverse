@@ -1,16 +1,19 @@
 <script lang="ts">
-	import type { Chart, Post, User } from '@prisma/client';
+	import type { Chart, Post, PostReplies, User } from '@prisma/client';
 	import moment from 'moment';
 	import CreatePost from './CreatePost.svelte';
-	import { Icon, ChatBubbleLeftEllipsis, XMark } from 'svelte-hero-icons';
+	import { Icon, ChatBubbleLeftEllipsis, XMark, Trash } from 'svelte-hero-icons';
 
 	export let post: PostWithReplies & { author: User };
 	export let chart: Chart;
+	export let deletable: boolean;
+	export let repliable: boolean;
 
 	let replyBoxOpen = false;
 	const showReplyBox = () => (replyBoxOpen = !replyBoxOpen);
 
-	type PostWithReplies = Post & { replies: { replies: Post[] } };
+	type PostWithReplies = Post & { replies: PostReplies & { replies: PostWithReplies[] } };
+
 	const dateString = moment(post?.date_posted).fromNow();
 </script>
 
@@ -35,7 +38,7 @@
 		</div>
 		<div class="date">{dateString}</div>
 
-		{#if !post.reply_to_id}
+		{#if repliable}
 			<button on:click={showReplyBox} class="reply-button">
 				{#if replyBoxOpen}
 					<Icon src={XMark} />
@@ -45,10 +48,20 @@
 			</button>
 		{/if}
 
+		<!-- Allow charter to remove comments -->
+		{#if deletable && (!post.replies || post.replies?.replies?.length == 0)}
+			<form method="post" action="?/delete_post">
+				<input type="hidden" name="post_id" value={post.id} />
+				<button type="submit" class="trash">
+					<Icon src={Trash} />
+				</button>
+			</form>
+		{/if}
+
 		<div class="replies">
 			{#if post.replies?.replies}
 				{#each post.replies.replies as reply}
-					<svelte:self post={reply} {chart} />
+					<svelte:self repliable={false} {deletable} post={reply} {chart} />
 				{/each}
 			{/if}
 		</div>
@@ -116,6 +129,23 @@
 		color: white;
 		background-color: var(--bg500);
 		z-index: 100;
+	}
+	.trash {
+		position: absolute;
+		cursor: pointer;
+		top: 10px;
+		right: 10px;
+		border: 0;
+		outline: 0;
+		width: 30px;
+		height: 30px;
+		border-radius: 6px;
+		color: var(--error);
+		background-color: transparent;
+		z-index: 100;
+	}
+	.trash:hover {
+		background-color: var(--bg500);
 	}
 	.user {
 		display: flex;
