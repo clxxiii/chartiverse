@@ -4,6 +4,18 @@ import type { User } from '@prisma/client';
 
 // for information about these interfaces
 declare global {
+	namespace Drive {
+		type ListResponse = {
+			nextPageToken: string | null;
+			files: ListFile[];
+		};
+		type ListFile = {
+			id: string;
+			name: string;
+			mimeType: string;
+			md5Checksum: string | null;
+		};
+	}
 	namespace App {
 		// interface Error {}
 		interface Locals {
