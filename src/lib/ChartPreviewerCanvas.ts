@@ -2,10 +2,10 @@ const noteTypeArray = ['#008000', '#FF0000', '#FFFF00', '#0000FF', '#FFA500', '#
 
 const sidePaddingPercent = 0.05; // Distance between walls and notes
 const notePaddingPercent = 0.02; // Distance between notes
-export const speedFactorMS = 450; // How quick the notes move (note speed)
-const FPS = 60;
+export const speedFactorMS = 450; // How long a note is on the highway (note speed)
+const maxFPS = 144; // How often the script will try to render a frame
 
-const frameTime = Math.round(1000 / FPS);
+const frameTime = Math.round(1000 / maxFPS);
 
 class ChartPreviewer {
 	ctx: CanvasRenderingContext2D;
@@ -57,7 +57,7 @@ class ChartPreviewer {
 			if (this.playbackPercentage >= 1) this.pause();
 
 			this._renderFrame(this.frame);
-			this.frame = this.frame + frameTime;
+			this.frame = Math.round(this.audio.currentTime * 1000)
 			this.playbackPercentage = this.frame / this.length;
 			if (this.frameCallback) this.frameCallback(this.playbackPercentage);
 		}, frameTime);
