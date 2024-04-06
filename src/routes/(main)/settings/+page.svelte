@@ -1,8 +1,9 @@
 <script lang="ts">
 	import ThemePreview from '$lib/components/ThemePreview.svelte';
-	import { DevicePhoneMobile, Icon, PaintBrush, User } from 'svelte-hero-icons';
+	import { Cloud, DevicePhoneMobile, Icon, PaintBrush, User } from 'svelte-hero-icons';
 	import Account from './Account.svelte';
 	import Appearance from './Appearance.svelte';
+	import Drive from './Drive.svelte';
 
 	export let data;
 
@@ -37,12 +38,12 @@
 
 			<span class="label">Appearance</span>
 		</button>
-		<button on:click={() => (settingsPage = 'Devices')}>
+		<button on:click={() => (settingsPage = 'Drive')}>
 			<span class="icon">
-				<Icon src={DevicePhoneMobile} width="25" />
+				<Icon src={Cloud} width="25" />
 			</span>
 
-			<span class="label">Devices</span>
+			<span class="label">Google Drive Sync</span>
 		</button>
 	</div>
 	<div class="content">
@@ -50,8 +51,8 @@
 			<Account user={data.user} {save} keys={data.keys} />
 		{:else if settingsPage == 'Appearance'}
 			<Appearance />
-		{:else if settingsPage == 'Devices'}
-			<h1>Device Settings</h1>
+		{:else if settingsPage == 'Drive'}
+			<Drive />
 		{/if}
 	</div>
 </div>
@@ -99,9 +100,6 @@
 	.sidebar {
 		background: var(--bg600);
 		padding: 10px;
-	}
-	.content h1 {
-		font-size: 3.5em;
 	}
 	.content {
 		padding: 10px;
