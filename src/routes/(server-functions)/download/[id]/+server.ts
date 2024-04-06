@@ -16,7 +16,13 @@ const BLACKLISTED_PROPERIES = [
 	'date_added',
 	'last_updated',
 	'tags',
-	'background_url'
+	'background_url',
+	'drive_id',
+	'audio_type',
+	'album_type',
+	'background_type',
+	'icon_type',
+	'username'
 ];
 
 export const GET: RequestHandler = async ({ params }) => {
