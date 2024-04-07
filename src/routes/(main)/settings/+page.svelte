@@ -4,8 +4,9 @@
 	import Account from './Account.svelte';
 	import Appearance from './Appearance.svelte';
 	import Drive from './Drive.svelte';
+	import type { PageData } from './$types';
 
-	export let data;
+	export let data: PageData;
 
 	let settingsPage = 'User';
 
@@ -52,7 +53,7 @@
 		{:else if settingsPage == 'Appearance'}
 			<Appearance />
 		{:else if settingsPage == 'Drive'}
-			<Drive />
+			<Drive drive={data.drives[0]} />
 		{/if}
 	</div>
 </div>

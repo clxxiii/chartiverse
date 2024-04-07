@@ -2,7 +2,7 @@ import { prisma } from '$lib/server/prisma';
 import { error, redirect, type ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { StatusCodes } from '$lib/StatusCodes';
-import { validateDriveId } from '$lib/server/GoogleDrive';
+import { drive } from './drive';
 
 export const load: ServerLoad = async ({ locals }) => {
 	const user = locals.user;
@@ -26,8 +26,13 @@ export const load: ServerLoad = async ({ locals }) => {
 			"id": true
 		}
 	})
+	const drives = await prisma.drive.findMany({
+		where: {
+			"user_id": user.id
+		},
+	})
 
-	return { keys, sessions };
+	return { keys, sessions, drives };
 };
 
 export const actions: Actions = {
@@ -61,19 +66,5 @@ export const actions: Actions = {
 			});
 		}
 	},
-	'change-drive-id': async ({ request, locals }) => {
-		const user = locals.user;
-		const data = await request.formData();
-
-		const driveId = data.get('id');
-		if (driveId && typeof driveId == 'string') {
-			const { can_read, valid_id } = await validateDriveId(driveId);
-			if (!valid_id) {
-				throw error(StatusCodes.BAD_REQUEST, "Not a valid Google Drive ID")
-			}
-			if (!can_read) {
-				throw error(StatusCodes.BAD_REQUEST, "This folder isn't public")
-			}
-		}
-	},
+	...drive
 };
