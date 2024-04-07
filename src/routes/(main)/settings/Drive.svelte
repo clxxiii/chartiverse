@@ -44,7 +44,7 @@ sync to set it & forget it, or sync once to leave Google Drive all together!
 <AutoSaveTextInput
 	label="Google Drive Folder ID"
 	{onsave}
-	value={drive.drive_id}
+	value={drive.drive_id ?? ''}
 	autosaveTime={1000}
 	width={310}
 	placeholder="1qkX1t-2DFng7F_xKvVoXQPX0AO5oOrH3"

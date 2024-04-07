@@ -1,6 +1,5 @@
 <script lang="ts">
-	import ThemePreview from '$lib/components/ThemePreview.svelte';
-	import { Cloud, DevicePhoneMobile, Icon, PaintBrush, User } from 'svelte-hero-icons';
+	import { Cloud, Icon, PaintBrush, User } from 'svelte-hero-icons';
 	import Account from './Account.svelte';
 	import Appearance from './Appearance.svelte';
 	import Drive from './Drive.svelte';
