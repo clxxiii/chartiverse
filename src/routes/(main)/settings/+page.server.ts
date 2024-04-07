@@ -2,6 +2,7 @@ import { prisma } from '$lib/server/prisma';
 import { error, redirect, type ServerLoad } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { StatusCodes } from '$lib/StatusCodes';
+import { drive } from './drive';
 
 export const load: ServerLoad = async ({ locals }) => {
 	const user = locals.user;
@@ -25,8 +26,13 @@ export const load: ServerLoad = async ({ locals }) => {
 			"id": true
 		}
 	})
+	const drives = await prisma.drive.findMany({
+		where: {
+			"user_id": user.id
+		},
+	})
 
-	return { keys, sessions };
+	return { keys, sessions, drives };
 };
 
 export const actions: Actions = {
@@ -59,5 +65,6 @@ export const actions: Actions = {
 				maxAge: 60 * 60 * 24 * 31
 			});
 		}
-	}
+	},
+	...drive
 };

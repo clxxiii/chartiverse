@@ -37,6 +37,10 @@ model Key {
   user_id String
 }
 
+// ************************
+//        USER DATA
+// ************************
+
 model User {
   id              String  @id @default(uuid())
   email           String?
@@ -47,6 +51,7 @@ model User {
 
   charts Chart[]
   posts  Post[]
+  drives Drive[]
 
   sessions Session[]
   keys     Key[]
@@ -77,6 +82,20 @@ model LoginProcess {
   linked_to    User?   @relation(fields: [linked_to_id], references: [id])
   linked_to_id String?
 }
+
+model Drive {
+  id       String  @id @default(uuid())
+  drive_id String? @unique
+
+  user_id String?
+  user    User?   @relation(fields: [user_id], references: [id])
+
+  charts Chart[]
+}
+
+// ************************
+//       CHART DATA
+// ************************
 
 model Chart {
   id String @id @default(uuid())
@@ -140,6 +159,9 @@ model Chart {
   user     User?   @relation(fields: [user_id, username], references: [id, username])
   username String?
   user_id  String?
+
+  in_drive Drive?  @relation(fields: [drive_id], references: [id])
+  drive_id String?
 
   posts Post[]
 }

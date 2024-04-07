@@ -8,7 +8,7 @@
 	export let msAfterInput = 1000;
 	export let save: (data: FormData) => Promise<void>;
 	export let user: User;
-	export let keys: { id: string; pretty_name: string }[];
+	export let keys: { id: string; pretty_name: string | null }[];
 	let timeout: NodeJS.Timer;
 
 	let typing = false;
@@ -82,7 +82,9 @@
 	</div>
 
 	{#each keys as { id, pretty_name }}
-		<Key {id} {pretty_name} {removable} />
+		{#if pretty_name}
+			<Key {id} {pretty_name} {removable} />
+		{/if}
 	{/each}
 </section>
 
