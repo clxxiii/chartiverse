@@ -58,6 +58,7 @@ model User {
 
   transfer_code       String?
   has_picked_username Boolean @default(false)
+  can_upload          Boolean @default(false)
 
   links_in_process LoginProcess[]
 
@@ -145,16 +146,15 @@ model Chart {
   frets           Int @default(0)
 
   // Files
-  song_url       String  @default("")
-  chart_url      String  @default("")
-  album_url      String  @default("")
-  background_url String?
-  icon_url       String?
+  files File[] @relation(name: "files")
 
-  audio_type      String  @default("ogg")
-  album_type      String  @default("png")
-  background_type String?
-  icon_type       String?
+  song_url  String @unique @default("")
+  chart_url String @unique @default("")
+  album_url String @unique @default("")
+
+  song_file  File @relation(fields: [song_url], references: [url], name: "song")
+  chart_file File @relation(fields: [chart_url], references: [url], name: "chart")
+  album_file File @relation(fields: [album_url], references: [url], name: "album")
 
   user     User?   @relation(fields: [user_id, username], references: [id, username])
   username String?
@@ -164,6 +164,23 @@ model Chart {
   drive_id String?
 
   posts Post[]
+}
+
+model File {
+  id String @id @default(uuid())
+
+  name String
+
+  md5sum   String  @unique
+  url      String  @unique // A link to the file in the cdn
+  drive_id String? @unique // Can be a direct link to a google drive
+
+  chart_id String?
+  file_for Chart?  @relation(fields: [chart_id], references: [id], name: "files")
+
+  album_for Chart? @relation(name: "album")
+  song_for  Chart? @relation(name: "song")
+  chart_for Chart? @relation(name: "chart")
 }
 
 model Post {
